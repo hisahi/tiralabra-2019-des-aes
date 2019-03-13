@@ -1,1 +1,11 @@
-Tein tällä viikolla repon alustuksen ja vaatimusmäärittelyn. Itse ohjelman lähdekoodi on vielä kirjoittamatta. Olen myös lukenut valmiiksi DES- ja AES-algoritmeista, joten olen oppinut niiden rakenteesta, ja seuraavaksi työnä on aloittaa niiden toteutus. Käytetty aika noin 2 tuntia.
+# Tehdyt asiat
+Tein tällä viikolla repon alustuksen ja vaatimusmäärittelyn. Itse ohjelman lähdekoodi on vielä kirjoittamatta. 
+
+# Mitä olen oppinut
+Olen myös lukenut valmiiksi DES- ja AES-algoritmeista, joten olen oppinut niiden rakenteesta.
+
+# Seuraavaksi
+Seuraavaksi työnä on aloittaa salausalgoritmien ja käyttöliittymän toteutus.
+
+# Aika
+Käytetty aika noin 2 tuntia.

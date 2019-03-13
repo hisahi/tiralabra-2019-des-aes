@@ -10,13 +10,13 @@ Ohjelma ottaa syötteeksi seuraavaa:
 * Valinta siitä, salataanko vai puretaanko.
 * Valinta algoritmille: joko DES, Triple-DES tai AES, ja lisäksi tila, jolla salataan: ECB, CBC tai CTR (viimeinen vain AES), ja AES:n tapauksessa avaimen koko: 128, 192 tai 256 bittiä.
 * Avain, jonka pituus on 56 bittiä DES-algoritmilla, 168 bittiä Triple-DES-algoritmilla ja 128, 192 tai 256 bittiä AES-algoritmilla (valittavissa).
-** Alustusvektori on 64 bittiä DES- tai Triple-DES-algoritmilla ja 128 bittiä AES-algoritmilla.
+  * Alustusvektori on 64 bittiä DES- tai Triple-DES-algoritmilla ja 128 bittiä AES-algoritmilla.
 * Jos salataan:
-** Mikä tahansa syöte, jonka pituus on vähintään yksi tavu. Kyseinen syöte salataan.
+  * Mikä tahansa syöte, jonka pituus on vähintään yksi tavu. Kyseinen syöte salataan.
 * Jos puretaan:
-** Alustusvektori (IV), jonka pituus on 64 bittiä DES- tai Triple-DES-algoritmilla ja 128 bittiä AES-algoritmilla.
-** Mikä tahansa syöte, jonka pituus on vähintään yksi tavu. Kyseisen syötteen salaus puretaan.
-** Syötteen tuloksen pituus; jokainen kolmesta algoritmista toimii 8 tai 16 bitin lohkoissa, jolloin salattavan tiedon loppuun saatetaan joutua mahdollisesti lisäämään täytettä. Pituuden tarkoituksena on poistaa tämä täyte.
+  * Alustusvektori (IV), jonka pituus on 64 bittiä DES- tai Triple-DES-algoritmilla ja 128 bittiä AES-algoritmilla.
+  * Mikä tahansa syöte, jonka pituus on vähintään yksi tavu. Kyseisen syötteen salaus puretaan.
+  * Syötteen tuloksen pituus; jokainen kolmesta algoritmista toimii 8 tai 16 bitin lohkoissa, jolloin salattavan tiedon loppuun saatetaan joutua mahdollisesti lisäämään täytettä. Pituuden tarkoituksena on poistaa tämä täyte.
 
 Tulosteena on syöte, kun se on salattu tai sen salaus purettu. Salattaessa ohjelma myös luo alustusvektorin, jota pitää käyttää purkaessa.
 
