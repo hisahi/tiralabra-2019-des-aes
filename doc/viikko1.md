@@ -1,0 +1,1 @@
+Tein tällä viikolla repon alustuksen ja vaatimusmäärittelyn. Itse ohjelman lähdekoodi on vielä kirjoittamatta. Olen myös lukenut valmiiksi DES- ja AES-algoritmeista, joten olen oppinut niiden rakenteesta, ja seuraavaksi työnä on aloittaa niiden toteutus. Käytetty aika noin 2 tuntia.
