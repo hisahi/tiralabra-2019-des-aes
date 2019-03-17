@@ -6,7 +6,7 @@ Tietorakenteiden ja algoritmien harjoitustyö periodille IV 2018-2019.
 Tarkoituksena on verrata DES, 3DES, AES (useita eri moodeja, kuten ECB, CBC, CTR), tarkalleen ottaen niiden nopeuksia, muistin käyttöä sekä toteutusta.
 
 * [Vaatimusmäärittely](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/vaatimusmaarittely.md)
-* Viikkoraportit: [1](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/viikko1.md)
+* Viikkoraportit: [1](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/viikko1.md) [2](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/viikko2.md)
 * [Testaus](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/testaus.md)
 * [Toteutus](https://github.com/hisahi/tiralabra-2019-des-aes/blob/master/doc/toteutus.md)
 

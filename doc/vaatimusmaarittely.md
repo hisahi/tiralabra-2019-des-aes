@@ -16,9 +16,8 @@ Ohjelma ottaa syötteeksi seuraavaa:
 * Jos puretaan:
   * Alustusvektori (IV), jonka pituus on 64 bittiä DES- tai Triple-DES-algoritmilla ja 128 bittiä AES-algoritmilla.
   * Mikä tahansa syöte, jonka pituus on vähintään yksi tavu. Kyseisen syötteen salaus puretaan.
-  * Syötteen tuloksen pituus; jokainen kolmesta algoritmista toimii 8 tai 16 bitin lohkoissa, jolloin salattavan tiedon loppuun saatetaan joutua mahdollisesti lisäämään täytettä. Pituuden tarkoituksena on poistaa tämä täyte.
 
-Tulosteena on syöte, kun se on salattu tai sen salaus purettu. Salattaessa ohjelma myös luo alustusvektorin, jota pitää käyttää purkaessa.
+Tulosteena on syöte, kun se on salattu tai sen salaus purettu. Salattaessa ohjelma myös luo alustusvektorin, jota pitää käyttää purkaessa. Jos salattavaan tietoon sovelletaan PKCS#5 ja PKCS#7 -täytemenetelmiä (riippuen lohkon koosta eli algoritmista).
 
 Ohjelman oletustilana on toimia stdin- ja stdout-menetelmällä, jossa parametrit asetetaan käyttämällä lippuja. Tämän lisäksi ohjelmaan toteutetaan testitila, joka salaa kaikilla algoritmeilla ja mittaa nopeudet sekä muistinkäytön.
 
