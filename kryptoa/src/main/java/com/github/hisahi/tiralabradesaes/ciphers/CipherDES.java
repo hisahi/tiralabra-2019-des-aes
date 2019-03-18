@@ -27,9 +27,14 @@ public class CipherDES implements IBlockCipher {
     
     private boolean init = false;
     private boolean encrypting = false;
-    private byte[] tmpblk;
+    
+    // round subkeys
     private long[] keysched;
-    private long tmp, vas, oik;
+    
+    // temp variables
+    private byte[] tmpblk;
+    private long tmp, vas, oik, E;
+    private int j;
     
     public CipherDES() {
         tmpblk = new byte[getBlockSizeInBytes()];
@@ -152,17 +157,15 @@ public class CipherDES implements IBlockCipher {
         if (!init) {
             throw new IllegalStateException("already finished");
         }
-        init = false;
         Utils.destroyArray(tmpblk);
         Arrays.fill(keysched, (long) -1);
+        vas = oik = E = j = 0;
+        init = false;
     }
 
     private void doPerm(byte[] block, int[] perm) {
-        int j;
-        for (int i = 0; i < 8; ++i) {
-            tmpblk[i] = block[i];
-            block[i] = 0;
-        }
+        System.arraycopy(block, 0, tmpblk, 0, 8);
+        Arrays.fill(block, (byte) 0);
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
@@ -171,11 +174,8 @@ public class CipherDES implements IBlockCipher {
     }
 
     private void doPermRev(byte[] block, int[] perm) {
-        int j;
         System.arraycopy(block, 0, tmpblk, 0, 8);
-        for (int i = 0; i < 8; ++i) {
-            block[i] = 0;
-        }
+        Arrays.fill(block, (byte) 0);
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
@@ -196,7 +196,7 @@ public class CipherDES implements IBlockCipher {
     
     private int feistel(int round, long val) {
         // expansion
-        long E =  ((val & 0xF8000000L) << 15L)
+        E =       ((val & 0xF8000000L) << 15L)
                 | ((val & 0x1F800000L) << 13L)
                 | ((val & 0x01F80000L) << 11L)
                 | ((val & 0x001F8000L) <<  9L) 
@@ -236,7 +236,7 @@ public class CipherDES implements IBlockCipher {
             | (((E >> 20) & 1) << 26) | (((E >>  3) & 1) << 27)
             | (((E >> 11) & 1) << 28) | (((E >> 12) & 1) << 29)
             | (((E >> 25) & 1) << 30) | (((E >> 16) & 1) << 31);
-        
+            
         return (int) E;
     }
     
@@ -281,7 +281,6 @@ public class CipherDES implements IBlockCipher {
         // FP
         doPerm(block, FP_PERM);
         
-        vas = oik = 0;
         return block;
     }
 }

@@ -4,6 +4,8 @@ package com.github.hisahi.tiralabradesaes;
 import com.github.hisahi.tiralabradesaes.blockmodes.IBlockMode;
 import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
 import com.sun.media.jfxmedia.track.Track;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +18,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Main {
+    private static boolean overwriteAlways = false;
+    
     public static void main(String[] args) throws Exception {
         System.exit(main_ret(args));
     }
@@ -107,13 +111,13 @@ public class Main {
             break;
         }
         case FILE: {
-            is = new FileInputStream(om.getInputString());
-            if (new File(om.getOutputString()).exists()) {
+            is = new BufferedInputStream(new FileInputStream(om.getInputString()));
+            if (!overwriteAlways && new File(om.getOutputString()).exists()) {
                 if (!Utils.confirmPrompt("Overwrite output file")) {
                     return 2;
                 }
             }
-            os = new FileOutputStream(om.getOutputString());
+            os = new BufferedOutputStream(new FileOutputStream(om.getOutputString()));
         }
         }
         
@@ -130,7 +134,6 @@ public class Main {
             
             while ((block = sbr.nextBlock()) != null) {
                 os.write(bm.process(block));
-                os.flush();
             }
             
             bm.finish();

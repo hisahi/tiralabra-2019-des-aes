@@ -101,11 +101,11 @@ public class CipherTripleDES implements IBlockCipher {
             throw new IllegalStateException("already finished");
         }
         
-        init = false;
-        
         des1.finish();
         des2.finish();
         des3.finish();
+        
+        init = false;
     }
 
 }
