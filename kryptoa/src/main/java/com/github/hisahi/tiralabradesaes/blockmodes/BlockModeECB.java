@@ -23,6 +23,11 @@ public class BlockModeECB implements IBlockMode {
         ciph = cipher;
     }
     
+    @Override
+    public boolean isValidIVSize(int bytes) {
+        return true;
+    }
+    
     private void initBase(byte[] iv) {
         if (init) {
             throw new IllegalStateException("already init");

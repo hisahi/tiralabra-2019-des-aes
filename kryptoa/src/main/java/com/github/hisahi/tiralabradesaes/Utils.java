@@ -1,8 +1,13 @@
 
 package com.github.hisahi.tiralabradesaes; 
 
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
 public class Utils {
-    private static final byte b0x80 = (byte) 128;
+    private static final String HEX_DIGITS = "0123456789abcdef";
+    private static Random rng = new Random();
     
     public static byte[] prepareDESKey(byte[] rawKey) {
         if (rawKey.length != 7) {
@@ -20,15 +25,43 @@ public class Utils {
         // now 0x00 < prepKey[0..8] < 0x80
         // now add parity
         for (int i = 0; i < 8; ++i) {
+            prepKey[i] <<= 1;
+            // parity goes to lowest bit
             prepKey[i] ^= computeOddParityMask(prepKey[i]);
         }
         return prepKey;
     }
     
-    private static byte computeOddParityMask(byte x) {
-        byte b = b0x80;
+    public static byte[] prepare3DESKey(byte[] rawKey) {
+        if (rawKey.length !=21) {
+            throw new IllegalArgumentException("must give 21-byte 168-bit key to prepare");
+        }
+        byte[] prepKeys = new byte[24];
+        
+        byte[] subkey1 = Arrays.copyOfRange(rawKey,  0,  7);
+        byte[] subkey2 = Arrays.copyOfRange(rawKey,  7, 14);
+        byte[] subkey3 = Arrays.copyOfRange(rawKey, 14, 21);
+        
+        byte[] prepKey1 = prepareDESKey(subkey1);
+        byte[] prepKey2 = prepareDESKey(subkey2);
+        byte[] prepKey3 = prepareDESKey(subkey3);
+        
+        for (int i = 0; i < 8; ++i) {
+            prepKeys[i     ] = prepKey1[i];
+            prepKeys[i +  8] = prepKey2[i];
+            prepKeys[i + 16] = prepKey3[i];
+            prepKey1[i] = prepKey2[i] = prepKey3[i] = 0;
+        }
         for (int i = 0; i < 7; ++i) {
-            b ^= b0x80 & (x << (7 - i));
+            subkey1[i] = subkey2[i] = subkey3[i] = 0;
+        }
+        return prepKeys;
+    }
+    
+    private static byte computeOddParityMask(byte x) {
+        byte b = 1;
+        for (int i = 0; i < 7; ++i) {
+            b ^= 1 & (x << (7 - i));
         }
         return b;
     }
@@ -36,10 +69,33 @@ public class Utils {
     public static int destroyArray(byte[] arr) {
         int j = 0;
         for (int i = 0; i < arr.length; ++i) {
-            arr[i] = (byte) (0x55 ^ (0xFF - ((i & 255) * 149)));
+            arr[i] = (byte) ((0x55 ^ (0xFF - ((i & 255) * 149))) ^ rng.nextInt());
             j = (j + i + arr[i]) % 257;
         }
         return j;
+    }
+
+    public static byte[] convertToHex(String str) {
+        // remove spaces
+        str = str.replace(" ", "");
+        // odd length -> invalid
+        if (str.length() % 2 != 0) return null;
+        
+        byte[] res = new byte[str.length() / 2];
+        int j = 0;
+        for (int i = 0; i < str.length(); i += 2) {
+            int sixteens = HEX_DIGITS.indexOf(str.toLowerCase().charAt(i));
+            int ones = HEX_DIGITS.indexOf(str.toLowerCase().charAt(i + 1));
+            
+            if (ones < 0 || sixteens < 0) {
+                // invalid hex digit
+                return null;
+            }
+            
+            res[j++] = (byte) (sixteens * 16 + ones);
+        }
+        
+        return res;
     }
 
     public static void dumpBlock(byte[] block, int length) {
@@ -47,6 +103,26 @@ public class Utils {
             System.out.print(String.format("%02x", block[i] & 0xFF));
         }
         System.out.println("");
+    }
+
+    public static boolean confirmPrompt(String msg) {
+        Scanner keyb = new Scanner(System.in);
+        String token;
+        String choice = "x";
+        
+        do {
+            System.out.print(msg + " [Y/N]?");
+            System.out.flush();
+            
+            token = keyb.next();
+            if (!token.isEmpty()) {
+                choice = token.toUpperCase().substring(0, 1);
+            }
+            
+            System.out.println();
+        } while (!"YN".contains(choice));
+        
+        return choice.equalsIgnoreCase("Y");
     }
     
     private Utils() {}

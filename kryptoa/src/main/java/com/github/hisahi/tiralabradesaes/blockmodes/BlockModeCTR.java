@@ -31,6 +31,11 @@ public class BlockModeCTR implements IBlockMode {
         tempbuf = new byte[ciph.getBlockSizeInBytes()];
     }
     
+    @Override
+    public boolean isValidIVSize(int bytes) {
+        return bytes == ciph.getBlockSizeInBytes();
+    }
+    
     private void initBase(byte[] iv) {
         if (init) {
             throw new IllegalStateException("already init");

@@ -14,6 +14,14 @@ public interface IBlockCipher {
     public int getBlockSizeInBytes();
     
     /**
+     * Checks whether the given key size is valid.
+     * 
+     * @return Whether a key with the zize matching the given number of bytes
+     *         is valid.
+     */
+    public boolean isValidKeySize(int bytes);
+    
+    /**
      * Initializes the block cipher for encryption. To be called
      * before either process() or finish(). Calling initEncrypt()
      * after initialization and before finishing is invalid.

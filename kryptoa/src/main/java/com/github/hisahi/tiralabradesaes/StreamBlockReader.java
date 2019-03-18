@@ -12,6 +12,7 @@ public class StreamBlockReader {
     private byte[] buffer;
     private int blockPointer;
     private boolean reachedEof;
+    private boolean willPad;
     
     /**
      * Creates a new BlockInputStream from an existing InputStream and a size of the block in bytes (* 8 for size in bits).
@@ -20,10 +21,22 @@ public class StreamBlockReader {
      * @param byteSize The size of the block in bytes.
      */
     public StreamBlockReader(InputStream inp, int byteSize) {
+        this(inp, byteSize, true);
+    }
+    
+    /**
+     * Creates a new BlockInputStream from an existing InputStream and a size of the block in bytes (* 8 for size in bits).
+     * 
+     * @param inp The InputStream to wrap.
+     * @param byteSize The size of the block in bytes.
+     * @param allowPadding Whether to add PKCS padding to the stream.
+     */
+    public StreamBlockReader(InputStream inp, int byteSize, boolean allowPadding) {
         stream = inp;
         buffer = new byte[byteSize];
         blockPointer = 0;
         reachedEof = false;
+        willPad = allowPadding;
     }
     
     /**
@@ -53,18 +66,26 @@ public class StreamBlockReader {
         
         /* at this point blockPointer is either buffer.length or less if EOF */
         if (blockPointer == 0) { // EOF exactly to block boundaries
-            // PKCS padding; give empty block with bytes representing block length
-            for (int i = 0; i < buffer.length; ++i) {
-                buffer[i] = (byte) buffer.length;
-            }
             reachedEof = true;
+            if (willPad) {
+                // PKCS padding; give empty block with bytes representing block length
+                for (int i = 0; i < buffer.length; ++i) {
+                    buffer[i] = (byte) buffer.length;
+                }
+            } else {
+                return null;
+            }
         } else if (blockPointer < buffer.length) {
-            // PKCS padding; pad rest of block
-            byte addPadding = (byte) (buffer.length - blockPointer);
-            for (int i = blockPointer; i < buffer.length; ++i) {
-                buffer[i] = addPadding;
-            }
             reachedEof = true;
+            if (willPad) {
+                // PKCS padding; pad rest of block
+                byte addPadding = (byte) (buffer.length - blockPointer);
+                for (int i = blockPointer; i < buffer.length; ++i) {
+                    buffer[i] = addPadding;
+                }
+            } else {
+                return null;
+            }
         } else {
             // reset for next block
             blockPointer = 0;

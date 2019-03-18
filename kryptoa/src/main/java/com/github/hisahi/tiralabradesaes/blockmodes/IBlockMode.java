@@ -6,6 +6,14 @@ package com.github.hisahi.tiralabradesaes.blockmodes;
  */
 public interface IBlockMode {
     /**
+     * Checks whether the given IV size is valid.
+     * 
+     * @return Whether an IV with the zize matching the given number of bytes
+     *         is valid.
+     */
+    public boolean isValidIVSize(int bytes);
+    
+    /**
      * Initializes the block cipher mode of operation for encrypting blocks.
      * Guaranteed to be called before either process() or finish().
      * Calling again is invalid before finish() is called.

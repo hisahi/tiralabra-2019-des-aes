@@ -10,6 +10,11 @@ public class MockBlockCipher implements IBlockCipher {
     }
 
     @Override
+    public boolean isValidKeySize(int bytes) {
+        return true;
+    }
+
+    @Override
     public void initEncrypt(byte[] key) {
     }
 
