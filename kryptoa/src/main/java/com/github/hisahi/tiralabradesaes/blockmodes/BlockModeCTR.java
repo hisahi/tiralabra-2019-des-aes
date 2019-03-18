@@ -13,11 +13,12 @@ import java.util.Arrays;
  */
 public class BlockModeCTR implements IBlockMode {
     
-    IBlockCipher ciph;
-    boolean init = false;
-    byte[] ctriv; // all three are the same length
-    byte[] counter;
-    byte[] tempbuf;
+    private IBlockCipher ciph;
+    private boolean init = false;
+    private byte[] ctriv; // all three are the same length
+    private byte[] counter;
+    private byte[] tempbuf;
+    private byte[] cb;
 
     /**
      * Initializes the CTR block mode with the cipher to call process() with.
@@ -29,6 +30,7 @@ public class BlockModeCTR implements IBlockMode {
         ctriv = new byte[ciph.getBlockSizeInBytes()];
         counter = new byte[ciph.getBlockSizeInBytes()];
         tempbuf = new byte[ciph.getBlockSizeInBytes()];
+        cb = new byte[0];
     }
     
     @Override
@@ -74,7 +76,7 @@ public class BlockModeCTR implements IBlockMode {
         }
         
         // encrypt IV ^ CTR
-        byte[] cb = ciph.process(tempbuf);
+        cb = ciph.process(tempbuf);
         
         // XOR with plaintext data
         for (int i = 0; i < cb.length; ++i) {
@@ -95,6 +97,7 @@ public class BlockModeCTR implements IBlockMode {
         Utils.destroyArray(ctriv);
         Arrays.fill(counter, (byte) 0);
         Arrays.fill(tempbuf, (byte) 0);
+        Arrays.fill(cb, (byte) 0);
     }
 
     /**

@@ -1,6 +1,10 @@
 
 package com.github.hisahi.tiralabradesaes.ciphers; 
 
+/**
+ * Implements AES with three possible key sizes: 128 bits, 
+ * 192 bits and 256 bits.
+ */
 public class CipherAES implements IBlockCipher {
 
     @Override

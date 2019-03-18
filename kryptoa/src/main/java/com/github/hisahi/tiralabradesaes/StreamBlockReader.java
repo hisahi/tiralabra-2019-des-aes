@@ -59,38 +59,36 @@ public class StreamBlockReader {
         while (blockPointer < buffer.length) {
             read = stream.read(buffer, blockPointer, buffer.length - blockPointer);
             if (read < 0) {
-                break;
+                // EOF
+                if (willPad) {
+                    if (blockPointer == 0) { // EOF exactly to block boundaries
+                        reachedEof = true;
+                        if (willPad) {
+                            // PKCS padding; give empty block with bytes representing block length
+                            for (int i = 0; i < buffer.length; ++i) {
+                                buffer[i] = (byte) buffer.length;
+                            }
+                            return buffer;
+                        }
+                    } else if (blockPointer < buffer.length) {
+                        reachedEof = true;
+                        if (willPad) {
+                            // PKCS padding; pad rest of block
+                            byte addPadding = (byte) (buffer.length - blockPointer);
+                            for (int i = blockPointer; i < buffer.length; ++i) {
+                                buffer[i] = addPadding;
+                            }
+                        }
+                    }
+                    return buffer;
+                }
+                return null;
             }
             blockPointer += read;
         }
         
-        /* at this point blockPointer is either buffer.length or less if EOF */
-        if (blockPointer == 0) { // EOF exactly to block boundaries
-            reachedEof = true;
-            if (willPad) {
-                // PKCS padding; give empty block with bytes representing block length
-                for (int i = 0; i < buffer.length; ++i) {
-                    buffer[i] = (byte) buffer.length;
-                }
-            } else {
-                return null;
-            }
-        } else if (blockPointer < buffer.length) {
-            reachedEof = true;
-            if (willPad) {
-                // PKCS padding; pad rest of block
-                byte addPadding = (byte) (buffer.length - blockPointer);
-                for (int i = blockPointer; i < buffer.length; ++i) {
-                    buffer[i] = addPadding;
-                }
-            } else {
-                return null;
-            }
-        } else {
-            // reset for next block
-            blockPointer = 0;
-        }
-        
+        // buffer is full
+        blockPointer = 0;
         return buffer;
     }
 }

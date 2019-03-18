@@ -16,6 +16,7 @@ public interface IBlockCipher {
     /**
      * Checks whether the given key size is valid.
      * 
+     * @param bytes The proposed size of the key in bytes,
      * @return Whether a key with the zize matching the given number of bytes
      *         is valid.
      */

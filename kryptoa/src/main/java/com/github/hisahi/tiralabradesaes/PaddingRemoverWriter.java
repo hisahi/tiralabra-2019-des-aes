@@ -3,8 +3,6 @@ package com.github.hisahi.tiralabradesaes;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A class that writes to an OutputStream, removing PKCS padding from the blocks it has been given.
@@ -51,6 +49,8 @@ public class PaddingRemoverWriter {
     
     /**
      * To be called when there are no more blocks to feed.
+     * 
+     * @throws IOException In case the underlying stream throws an exception.
      */
     public void finish() throws IOException {
         if (finished) {

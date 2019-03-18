@@ -4,6 +4,9 @@ package com.github.hisahi.tiralabradesaes.ciphers;
 import com.github.hisahi.tiralabradesaes.Utils;
 import java.util.Arrays;
 
+/**
+ * Implements DES with 64-bit keys (with 56 bits of security).
+ */
 public class CipherDES implements IBlockCipher {
     // initial permutation (IP), encodes bit positions
     private static final int[] IP_PERM = { 6, 14, 22, 30, 38, 46, 54, 62, 4, 12, 20, 28, 36, 44, 52, 60, 2, 10, 18, 26, 34, 42, 50, 58, 0, 8, 16, 24, 32, 40, 48, 56, 7, 15, 23, 31, 39, 47, 55, 63, 5, 13, 21, 29, 37, 45, 53, 61, 3, 11, 19, 27, 35, 43, 51, 59, 1, 9, 17, 25, 33, 41, 49, 57 };
@@ -183,17 +186,6 @@ public class CipherDES implements IBlockCipher {
         }
     }
     
-    private long doubleExpand(long l) {
-        return ((l & (63L << 42)) << 14L)
-             | ((l & (63L << 36)) << 12L)
-             | ((l & (63L << 30)) << 10L)
-             | ((l & (63L << 24)) <<  8L)
-             | ((l & (63L << 18)) <<  6L)
-             | ((l & (63L << 12)) <<  4L)
-             | ((l & (63L <<  6)) <<  2L)
-             | ((l & (63)));
-    }
-    
     private int feistel(int round, long val) {
         // expansion
         E =       ((val & 0xF8000000L) << 15L)
@@ -242,6 +234,9 @@ public class CipherDES implements IBlockCipher {
     
     @Override
     public byte[] process(byte[] block) {
+        if (!init) {
+            throw new IllegalStateException("init first");
+        }
         if (block.length != getBlockSizeInBytes()) {
             throw new IllegalArgumentException("invalid block size");
         }

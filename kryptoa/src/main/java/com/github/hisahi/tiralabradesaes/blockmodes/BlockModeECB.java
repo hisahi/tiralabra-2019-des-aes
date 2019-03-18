@@ -11,8 +11,8 @@ import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
  */
 public class BlockModeECB implements IBlockMode {
     
-    IBlockCipher ciph;
-    boolean init = false;
+    private IBlockCipher ciph;
+    private boolean init = false;
 
     /**
      * Initializes the ECB block mode with the cipher to call process() with.

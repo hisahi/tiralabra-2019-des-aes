@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 /**
  * Implements 3DES-3TDEA, with three DES encryptions with three separate keys.
+ * Each key is 64 bits (56 bits of security), which means 3DES expects
+ * 192-bit (with 168 bits of security) keys.
  */
 public class CipherTripleDES implements IBlockCipher {
 

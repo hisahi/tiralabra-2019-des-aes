@@ -2,6 +2,9 @@
 package com.github.hisahi.tiralabradesaes.blockmodes; 
 import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
 
+/**
+ * A mock IBlockCipher for testing IBlockMode implementations.
+ */
 public class MockBlockCipher implements IBlockCipher {
 
     @Override

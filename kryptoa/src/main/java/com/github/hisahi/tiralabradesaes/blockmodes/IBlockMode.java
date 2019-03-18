@@ -8,7 +8,8 @@ public interface IBlockMode {
     /**
      * Checks whether the given IV size is valid.
      * 
-     * @return Whether an IV with the zize matching the given number of bytes
+     * @param bytes The proposed size of the IV in bytes,
+     * @return Whether an IV with the size matching the given number of bytes
      *         is valid.
      */
     public boolean isValidIVSize(int bytes);

@@ -1,9 +1,12 @@
 
-package com.github.hisahi.tiralabradesaes; 
+package com.github.hisahi.tiralabradesaes.ui; 
 
+import com.github.hisahi.tiralabradesaes.HexOutputStream;
+import com.github.hisahi.tiralabradesaes.PaddingRemoverWriter;
+import com.github.hisahi.tiralabradesaes.StreamBlockReader;
+import com.github.hisahi.tiralabradesaes.Utils;
 import com.github.hisahi.tiralabradesaes.blockmodes.IBlockMode;
 import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
-import com.sun.media.jfxmedia.track.Track;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -16,6 +19,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Scanner;
 
 public class Main {
     private static boolean overwriteAlways = false;
@@ -70,8 +74,13 @@ public class Main {
         if (key.length == 7 && om.getCipherType() == OperationMode.Cipher.DES) {
             // expand key
             key = Utils.prepareDESKey(key);
-        }
-        if (key.length == 21 && om.getCipherType() == OperationMode.Cipher.TDES) {
+        } else if (key.length == 14 && om.getCipherType() == OperationMode.Cipher.TDES) {
+            // expand key
+            key = Utils.prepare3DESKeyFrom14Bytes(key);
+        } else if (key.length == 16 && om.getCipherType() == OperationMode.Cipher.TDES) {
+            // expand key
+            key = Utils.prepare3DESKeyFrom16Bytes(key);
+        } else if (key.length == 21 && om.getCipherType() == OperationMode.Cipher.TDES) {
             // expand key
             key = Utils.prepare3DESKey(key);
         }
@@ -113,7 +122,7 @@ public class Main {
         case FILE: {
             is = new BufferedInputStream(new FileInputStream(om.getInputString()));
             if (!overwriteAlways && new File(om.getOutputString()).exists()) {
-                if (!Utils.confirmPrompt("Overwrite output file")) {
+                if (!confirmPrompt("Overwrite output file")) {
                     return 2;
                 }
             }
@@ -177,6 +186,26 @@ public class Main {
         return 0;
     }
 
+    public static boolean confirmPrompt(String msg) {
+        Scanner keyb = new Scanner(System.in);
+        String token;
+        String choice = "x";
+        
+        do {
+            System.out.print(msg + " [Y/N]?");
+            System.out.flush();
+            
+            token = keyb.next();
+            if (!token.isEmpty()) {
+                choice = token.toUpperCase().substring(0, 1);
+            }
+            
+            System.out.println();
+        } while (!"YN".contains(choice));
+        
+        return choice.equalsIgnoreCase("Y");
+    }
+
     private static OperationMode parseParameters(String[] args, int start) {
         int i = start;
         
@@ -185,7 +214,7 @@ public class Main {
             OperationMode.Cipher ciph;
             OperationMode.BlockMode bm;
             OperationMode.IOMode io;
-            String key = "";
+            String key;
             String iv = "";
             String in = "";
             String out = "";

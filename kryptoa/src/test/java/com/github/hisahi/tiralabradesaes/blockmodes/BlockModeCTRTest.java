@@ -24,6 +24,12 @@ public class BlockModeCTRTest {
     }
     
     @Test
+    public void correctVerifyIVSize() {
+        assertTrue(ctr.isValidIVSize(8));
+        assertFalse(ctr.isValidIVSize(9));
+    }
+    
+    @Test
     public void testCTRZeroIVOneBlocks() {
         ctr.initEncrypt(ZERO_NONCE);
         

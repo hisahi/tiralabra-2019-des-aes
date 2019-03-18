@@ -29,7 +29,9 @@ public class CipherDESUnitTest {
     
     @After
     public void tearDown() {
-        des.finish();
+        try {
+            des.finish();
+        } catch (IllegalStateException ex) {}
     }
 
     @Test
@@ -63,5 +65,28 @@ public class CipherDESUnitTest {
         
         des.initDecrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
         assertArrayEquals(data, des.process(data));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void notAllowingKeyOfWrongSize() {
+        des.initEncrypt(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void notAllowingBlockOfWrongSize() {
+        des.initEncrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
+        des.process(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void notProcessBeforeInit() {
+        des.process(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void notProcessAfterFinish() {
+        des.initEncrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
+        des.finish();
+        des.process(new byte[] { 1 });
     }
 }

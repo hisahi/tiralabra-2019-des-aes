@@ -11,10 +11,11 @@ import java.util.Arrays;
  */
 public class BlockModeCBC implements IBlockMode {
     
-    IBlockCipher ciph;
-    boolean init = false;
-    boolean encrypting = false;
-    byte[] lastBlock;
+    private IBlockCipher ciph;
+    private boolean init = false;
+    private boolean encrypting = false;
+    private byte[] lastBlock;
+    private byte[] cb;
 
     /**
      * Initializes the CBC block mode with the cipher to call process() with.
@@ -24,6 +25,7 @@ public class BlockModeCBC implements IBlockMode {
     public BlockModeCBC(IBlockCipher cipher) {
         ciph = cipher;
         lastBlock = new byte[ciph.getBlockSizeInBytes()];
+        cb = new byte[0];
     }
     
     @Override
@@ -61,23 +63,27 @@ public class BlockModeCBC implements IBlockMode {
         if (data.length != ciph.getBlockSizeInBytes()) {
             throw new IllegalArgumentException("wrong block size");
         }
-        byte[] cb;
+        
         if (encrypting) {
             // XOR with lastBlock
             for (int i = 0; i < data.length; ++i) {
                 data[i] ^= lastBlock[i];
             }
+            
             // encrypt
             cb = ciph.process(data);
+            
             // new lastBlock init
             System.arraycopy(cb, 0, lastBlock, 0, lastBlock.length);
         } else {
             // decrypt
             cb = ciph.process(Arrays.copyOf(data, data.length));
+            
             // XOR with lastBlock
             for (int i = 0; i < cb.length; ++i) {
                 cb[i] ^= lastBlock[i];
             }
+            
             // new lastBlock init
             System.arraycopy(data, 0, lastBlock, 0, lastBlock.length);
         }
@@ -90,8 +96,9 @@ public class BlockModeCBC implements IBlockMode {
             throw new IllegalStateException("already finished");
         }
         init = false;
-        // destroy lastBlock
+        // destroy lastBlock & cb
         Utils.destroyArray(lastBlock);
+        Utils.destroyArray(cb); 
     }
 
 }

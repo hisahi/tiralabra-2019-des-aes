@@ -30,7 +30,9 @@ public class CipherTripleDESUnitTest {
     
     @After
     public void tearDown() {
-        tdes.finish();
+        try {
+            tdes.finish();
+        } catch (IllegalStateException ex) {}
     }
 
     @Test
@@ -57,5 +59,28 @@ public class CipherTripleDESUnitTest {
         
         tdes.initDecrypt(tdeskey);
         assertArrayEquals(data, tdes.process(data));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void notAllowingKeyOfWrongSize() {
+        tdes.initEncrypt(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void notAllowingBlockOfWrongSize() {
+        tdes.initEncrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E, 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E, 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
+        tdes.process(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void notProcessBeforeInit() {
+        tdes.process(new byte[] { 1 });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void notProcessAfterFinish() {
+        tdes.initEncrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E, 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E, 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
+        tdes.finish();
+        tdes.process(new byte[] { 1 });
     }
 }

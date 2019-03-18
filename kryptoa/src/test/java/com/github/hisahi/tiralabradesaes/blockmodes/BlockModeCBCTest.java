@@ -24,6 +24,12 @@ public class BlockModeCBCTest {
     }
     
     @Test
+    public void correctVerifyIVSize() {
+        assertTrue(cbc.isValidIVSize(8));
+        assertFalse(cbc.isValidIVSize(9));
+    }
+    
+    @Test
     public void testCBCZeroIVOneBlocks() {
         cbc.initEncrypt(ZERO_IV);
         
