@@ -114,8 +114,26 @@ public class CipherAES implements IBlockCipher {
             }
         }
         
+        // transpose the keys
+        for (int i = 0; i <= rounds; ++i) {
+            keyTranspose(i);
+        }
+        
         init = true;
         encrypting = willEncrypt;
+    }
+    
+    private void keyTranspose(int i) {
+        a0 = key0[i]; a1 = key1[i]; a2 = key2[i]; a3 = key3[i];
+        
+        key0[i] = ((a0 & 0xFF000000)       ) | ((a1 & 0xFF000000) >>>  8) 
+                | ((a2 & 0xFF000000) >>> 16) | ((a3 & 0xFF000000) >>> 24);
+        key1[i] = ((a0 & 0x00FF0000)  <<  8) | ((a1 & 0x00FF0000)       ) 
+                | ((a2 & 0x00FF0000) >>>  8) | ((a3 & 0x00FF0000) >>> 16);
+        key2[i] = ((a0 & 0x0000FF00)  << 16) | ((a1 & 0x0000FF00)  <<  8) 
+                | ((a2 & 0x0000FF00)       ) | ((a3 & 0x0000FF00) >>>  8);
+        key3[i] = ((a0 & 0x000000FF)  << 24) | ((a1 & 0x000000FF)  << 16) 
+                | ((a2 & 0x000000FF)  <<  8) | ((a3 & 0x000000FF)       );
     }
 
     @Override
@@ -184,14 +202,14 @@ public class CipherAES implements IBlockCipher {
         }
         
         // convert block to 4 ints
-        t0 =      ((block[ 0] & 0xFF) << 24) | ((block[ 1] & 0xFF) << 16) 
-                | ((block[ 2] & 0xFF) <<  8) |  (block[ 3] & 0xFF);
-        t1 =      ((block[ 4] & 0xFF) << 24) | ((block[ 5] & 0xFF) << 16) 
-                | ((block[ 6] & 0xFF) <<  8) |  (block[ 7] & 0xFF);
-        t2 =      ((block[ 8] & 0xFF) << 24) | ((block[ 9] & 0xFF) << 16) 
-                | ((block[10] & 0xFF) <<  8) |  (block[11] & 0xFF);
-        t3 =      ((block[12] & 0xFF) << 24) | ((block[13] & 0xFF) << 16) 
-                | ((block[14] & 0xFF) <<  8) |  (block[15] & 0xFF);
+        t0 =      ((block[ 0] & 0xFF) << 24) | ((block[ 4] & 0xFF) << 16) 
+                | ((block[ 8] & 0xFF) <<  8) |  (block[12] & 0xFF);
+        t1 =      ((block[ 1] & 0xFF) << 24) | ((block[ 5] & 0xFF) << 16) 
+                | ((block[ 9] & 0xFF) <<  8) |  (block[13] & 0xFF);
+        t2 =      ((block[ 2] & 0xFF) << 24) | ((block[ 6] & 0xFF) << 16) 
+                | ((block[10] & 0xFF) <<  8) |  (block[14] & 0xFF);
+        t3 =      ((block[ 3] & 0xFF) << 24) | ((block[ 7] & 0xFF) << 16) 
+                | ((block[11] & 0xFF) <<  8) |  (block[15] & 0xFF);
         
         if (encrypting) {
             for (int i = 0; i < rounds - 1; ++i) {
@@ -222,24 +240,24 @@ public class CipherAES implements IBlockCipher {
             for (int i = 0; i < rounds - 1; ++i) {
                 // AddRoundKey
                 t0 ^= key0[i]; t1 ^= key1[i]; t2 ^= key2[i]; t3 ^= key3[i];
-                // SubBytes
+                // inverse SubBytes
                 t0 = doInvSubBytes(t0); t1 = doInvSubBytes(t1);
                 t2 = doInvSubBytes(t2); t3 = doInvSubBytes(t3);
-                // ShiftRows
+                // inverse ShiftRows
                 t1 = (t1 << 24) | (t1 >>>  8);
                 t2 = (t2 << 16) | (t2 >>> 16);
                 t3 = (t3 <<  8) | (t3 >>> 24);
-                // MixColumns
+                // inverse MixColumns
                 doInvMixColumns();
             }
             
             // pre-final AddRoundKey
             t0 ^= key0[rounds - 1]; t1 ^= key1[rounds - 1]; 
             t2 ^= key2[rounds - 1]; t3 ^= key3[rounds - 1];
-            // SubBytes
+            // inverse SubBytes
             t0 = doInvSubBytes(t0); t1 = doInvSubBytes(t1);
             t2 = doInvSubBytes(t2); t3 = doInvSubBytes(t3);
-            // ShiftRows
+            // inverse ShiftRows
             t1 = (t1 << 24) | (t1 >>>  8);
             t2 = (t2 << 16) | (t2 >>> 16);
             t3 = (t3 <<  8) | (t3 >>> 24);
