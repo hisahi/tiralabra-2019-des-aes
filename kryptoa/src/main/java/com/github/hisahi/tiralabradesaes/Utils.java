@@ -146,6 +146,21 @@ public final class Utils {
         }
         return j;
     }
+    
+    /**
+     * Wipes the contents of the given int[] array.
+     * 
+     * @param arr The array to wipe.
+     * @return Meaningless number.
+     */
+    public static int destroyArray(int[] arr) {
+        int j = 0;
+        for (int i = 0; i < arr.length; ++i) {
+            arr[i] = ((0x55AA55AA ^ (i * -732137189)) ^ rng.nextInt());
+            j = (j + i + arr[i]);
+        }
+        return j;
+    }
 
     /**
      * Converts the given hex string to a byte array. The string is expected

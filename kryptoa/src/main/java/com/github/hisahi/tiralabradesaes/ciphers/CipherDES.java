@@ -53,7 +53,7 @@ public class CipherDES implements IBlockCipher {
         return bytes == 8;
     }
     
-    private void initBase(byte[] key) {
+    private void initBase(byte[] key, boolean willEncrypt) {
         if (init) {
             throw new IllegalStateException("already init");
         }
@@ -114,6 +114,7 @@ public class CipherDES implements IBlockCipher {
         }
         a1 = a2 = a3 = a4 = a5 = a6 = a7 = a8 = 0;
         init = true;
+        encrypting = willEncrypt;
     }
 
     // check if bits 7, 15, 23... have proper parity
@@ -145,14 +146,12 @@ public class CipherDES implements IBlockCipher {
 
     @Override
     public void initEncrypt(byte[] key) {
-        encrypting = true;
-        initBase(key);
+        initBase(key, true);
     }
 
     @Override
     public void initDecrypt(byte[] key) {
-        encrypting = false;
-        initBase(key);
+        initBase(key, false);
     }
 
     @Override
