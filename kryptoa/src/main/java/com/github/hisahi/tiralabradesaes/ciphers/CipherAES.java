@@ -268,14 +268,14 @@ public class CipherAES implements IBlockCipher {
         t2 ^= key2[rounds]; t3 ^= key3[rounds];
         
         // convert ints back to block
-        block[ 0] = (byte) (t0 >>> 24); block[ 1] = (byte) (t0 >>> 16);
-        block[ 2] = (byte) (t0 >>>  8); block[ 3] = (byte) (t0       );
-        block[ 4] = (byte) (t1 >>> 24); block[ 5] = (byte) (t1 >>> 16);
-        block[ 6] = (byte) (t1 >>>  8); block[ 7] = (byte) (t1       );
-        block[ 8] = (byte) (t2 >>> 24); block[ 9] = (byte) (t2 >>> 16);
-        block[10] = (byte) (t2 >>>  8); block[11] = (byte) (t2       );
-        block[12] = (byte) (t3 >>> 24); block[13] = (byte) (t3 >>> 16);
-        block[14] = (byte) (t3 >>>  8); block[15] = (byte) (t3       );
+        block[ 0] = (byte) (t0 >>> 24); block[ 1] = (byte) (t1 >>> 24);
+        block[ 2] = (byte) (t2 >>> 24); block[ 3] = (byte) (t3 >>> 24);
+        block[ 4] = (byte) (t0 >>> 16); block[ 5] = (byte) (t1 >>> 16);
+        block[ 6] = (byte) (t2 >>> 16); block[ 7] = (byte) (t3 >>> 16);
+        block[ 8] = (byte) (t0 >>>  8); block[ 9] = (byte) (t1 >>>  8);
+        block[10] = (byte) (t2 >>>  8); block[11] = (byte) (t3 >>>  8);
+        block[12] = (byte) (t0       ); block[13] = (byte) (t1       );
+        block[14] = (byte) (t2       ); block[15] = (byte) (t3       );
         
         return block;
     }

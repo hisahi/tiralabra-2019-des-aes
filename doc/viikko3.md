@@ -8,7 +8,7 @@ AES:n toimintaperiaatteet.
 Seuraavaksi työnä on kehittää edelleen käyttöliittymää ja optimoida koodia entisestään. Tämän lisäksi saattaa tulla myös muita ominaisuusideoita.
 
 # Vaikeudet
-
+AES:n kanssa oli aluksi ongelmia rivien ja sarakkeiden sekaannusten kanssa.
 
 # Aika
-Käytetty aika noin 3 tuntia.
+Käytetty aika noin 5 tuntia.

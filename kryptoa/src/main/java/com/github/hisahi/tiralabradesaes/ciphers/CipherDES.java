@@ -69,6 +69,7 @@ public class CipherDES implements IBlockCipher {
             // no, invalid parity is fine for now
         }
         
+        encrypting = willEncrypt;
         key = Arrays.copyOf(key, key.length);
         
         long a1, a2, a3, a4, a5, a6, a7, a8;
@@ -114,7 +115,6 @@ public class CipherDES implements IBlockCipher {
         }
         a1 = a2 = a3 = a4 = a5 = a6 = a7 = a8 = 0;
         init = true;
-        encrypting = willEncrypt;
     }
 
     // check if bits 7, 15, 23... have proper parity

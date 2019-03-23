@@ -44,12 +44,12 @@ public class CipherTripleDESUnitTest {
     public void testEncryptAndDecrypt() {
         byte[] data = new byte[] { 0x67, 0x5A, 0x69, 0x67, 0x5E, 0x5A, 0x6B, 0x5A };
         tdes.initEncrypt(tdeskey);
-        byte[] res = tdes.process(data);
+        byte[] res = tdes.process(Arrays.copyOf(data, data.length));
         res = Arrays.copyOf(res, res.length);
         tdes.finish();
         
         tdes.initDecrypt(tdeskey);
-        assertArrayEquals(data, tdes.process(data));
+        assertArrayEquals(data, tdes.process(res));
     }
 
     @Test(expected = IllegalArgumentException.class)

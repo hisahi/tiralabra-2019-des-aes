@@ -35,10 +35,16 @@ public class CipherAESUnitTest {
 
     @Test
     public void testEncrypt192() {
+        aes.initEncrypt(Utils.convertToHex("aa9dca3ba4de72155c652ae17cfa6926cfd12addbb2b212c"));
+        byte[] res = aes.process(Utils.convertToHex("00112233445566778899aabbccddeeff"));
+        assertArrayEquals(Utils.convertToHex("a174c3f09dcac31edc78ed7c5b816a75"), res);
     }
 
     @Test
     public void testEncrypt256() {
+        aes.initEncrypt(Utils.convertToHex("b6d40ab01a80415ae8ee56bc7998ed12ac017d3fd5433373c578fbb117906b18"));
+        byte[] res = aes.process(Utils.convertToHex("00112233445566778899aabbccddeeff"));
+        assertArrayEquals(Utils.convertToHex("305ac3d618fcf837b25772f5720b4aad"), res);
     }
 
     @Test
@@ -57,12 +63,12 @@ public class CipherAESUnitTest {
     public void testEncryptAndDecrypt128() {
         byte[] data = Utils.convertToHex("00112233445566778899aabbccddeeff");
         aes.initEncrypt(Utils.convertToHex("000102030405060708090a0b0c0d0e0f"));
-        byte[] res = aes.process(data);
+        byte[] res = aes.process(Arrays.copyOf(data, data.length));
         res = Arrays.copyOf(res, res.length);
         aes.finish();
         
         aes.initDecrypt(Utils.convertToHex("000102030405060708090a0b0c0d0e0f"));
-        assertArrayEquals(data, aes.process(data));
+        assertArrayEquals(data, aes.process(res));
     }
 
     @Test(expected = IllegalArgumentException.class)

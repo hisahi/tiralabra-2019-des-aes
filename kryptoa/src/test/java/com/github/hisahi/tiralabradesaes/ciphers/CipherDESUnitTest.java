@@ -50,12 +50,12 @@ public class CipherDESUnitTest {
     public void testEncryptAndDecrypt() {
         byte[] data = new byte[] { 0x67, 0x5A, 0x69, 0x67, 0x5E, 0x5A, 0x6B, 0x5A };
         des.initEncrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
-        byte[] res = des.process(data);
+        byte[] res = des.process(Arrays.copyOf(data, data.length));
         res = Arrays.copyOf(res, res.length);
         des.finish();
         
         des.initDecrypt(new byte[] { 0x5B, 0x5A, 0x57, 0x67, 0x6A, 0x56, 0x67, 0x6E });
-        assertArrayEquals(data, des.process(data));
+        assertArrayEquals(data, des.process(res));
     }
 
     @Test(expected = IllegalArgumentException.class)
