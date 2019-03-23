@@ -221,8 +221,7 @@ public class CipherAES implements IBlockCipher {
     }
     
     private void doMixColumns() {
-        // this is confusing algebra so let's use LUTs
-        // but can it be optimized?
+        // LUTs are way faster after all
         // aN <- tN
         a0 = t0; a1 = t1; a2 = t2; a3 = t3;
         
