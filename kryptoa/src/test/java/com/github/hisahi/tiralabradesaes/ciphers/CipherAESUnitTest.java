@@ -49,14 +49,23 @@ public class CipherAESUnitTest {
 
     @Test
     public void testDecrypt128() {
+        aes.initDecrypt(Utils.convertToHex("000102030405060708090a0b0c0d0e0f"));
+        byte[] res = aes.process(Utils.convertToHex("00112233445566778899aabbccddeeff"));
+        assertArrayEquals(Utils.convertToHex("762a5ab50929189cefdb99434790aad8"), res);
     }
 
     @Test
     public void testDecrypt192() {
+        aes.initDecrypt(Utils.convertToHex("aa9dca3ba4de72155c652ae17cfa6926cfd12addbb2b212c"));
+        byte[] res = aes.process(Utils.convertToHex("00112233445566778899aabbccddeeff"));
+        assertArrayEquals(Utils.convertToHex("1521e2e918e8e9928680fc78a2face1b"), res);
     }
 
     @Test
     public void testDecrypt256() {
+        aes.initDecrypt(Utils.convertToHex("b6d40ab01a80415ae8ee56bc7998ed12ac017d3fd5433373c578fbb117906b18"));
+        byte[] res = aes.process(Utils.convertToHex("00112233445566778899aabbccddeeff"));
+        assertArrayEquals(Utils.convertToHex("5b0a8fdb94985103947629f1caa42518"), res);
     }
 
     @Test
