@@ -11,4 +11,4 @@ Seuraavaksi työnä on kehittää edelleen käyttöliittymää ja optimoida kood
 AES:n kanssa oli aluksi ongelmia rivien ja sarakkeiden sekaannusten kanssa.
 
 # Aika
-Käytetty aika noin 6 tuntia.
+Käytetty aika noin 7 tuntia.
