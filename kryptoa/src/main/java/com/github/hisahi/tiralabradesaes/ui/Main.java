@@ -135,6 +135,8 @@ public class Main {
         long usedMemoryBefore = Runtime.getRuntime().totalMemory()
                               - Runtime.getRuntime().freeMemory();
         long nanoTimeBefore   = System.nanoTime();
+        long nanoTimeProcess  = 0;
+        long processBytes     = 0;
             
         if (om.getDirection() == OperationMode.Direction.ENCRYPT) {
             StreamBlockReader sbr = new StreamBlockReader(is, bc.getBlockSizeInBytes());
@@ -142,7 +144,11 @@ public class Main {
             bm.initEncrypt(iv);
             
             while ((block = sbr.nextBlock()) != null) {
-                os.write(bm.process(block));
+                nanoTimeProcess -= System.nanoTime();
+                block = bm.process(block);
+                nanoTimeProcess += System.nanoTime();
+                os.write(block);
+                processBytes += block.length;
             }
             
             bm.finish();
@@ -155,10 +161,13 @@ public class Main {
             bm.initDecrypt(iv);
             
             while ((block = sbr.nextBlock()) != null) {
-                prw.feedBlock(bm.process(block));
+                nanoTimeProcess -= System.nanoTime();
+                block = bm.process(block);
+                nanoTimeProcess += System.nanoTime();
+                processBytes += prw.feedBlock(block);
             }
             
-            prw.finish();
+            processBytes += prw.finish();
             bm.finish();
             bc.finish();
         }
@@ -172,16 +181,35 @@ public class Main {
         if (os != null)
             os.close();
         
-        System.err.println("=========================================");
-        System.err.println(String.format("Time  %30s nsec", NumberFormat
+        // print details
+        NumberFormat dnf = NumberFormat.getNumberInstance(Locale.US);
+        dnf.setMinimumFractionDigits(3);
+        
+        System.err.println("=======================================================");
+        System.err.println(String.format("Time            %30s     nsec", NumberFormat
                             .getNumberInstance(Locale.US)
                             .format(nanoTimeAfter - nanoTimeBefore)
                             .replace(',', ' ')));
-        System.err.println(String.format("Mem   %30s    B", NumberFormat
+        System.err.println(String.format("Time enc/dec    %30s     nsec", NumberFormat
+                            .getNumberInstance(Locale.US)
+                            .format(nanoTimeProcess)
+                            .replace(',', ' ')));
+        System.err.println(String.format("Mem             %30s        B", NumberFormat
                             .getNumberInstance(Locale.US)
                             .format(usedMemoryAfter - usedMemoryBefore)
                             .replace(',', ' ')));
-        System.err.println("=========================================");
+        System.err.println("=======================================================");
+        System.err.println(String.format("Processed       %30s        B", NumberFormat
+                            .getNumberInstance(Locale.US)
+                            .format(processBytes)
+                            .replace(',', ' ')));
+        System.err.println(String.format("Exec speed      %34s  B/s", 
+                            dnf.format((processBytes * 1000) / ((nanoTimeAfter - nanoTimeBefore) * 0.000_001))
+                            .replace(',', ' ')));
+        System.err.println(String.format("Enc/dec speed   %34s  B/s", 
+                            dnf.format((processBytes * 1000) / (nanoTimeProcess * 0.000_001))
+                            .replace(',', ' ')));
+        System.err.println("=======================================================");
         
         return 0;
     }

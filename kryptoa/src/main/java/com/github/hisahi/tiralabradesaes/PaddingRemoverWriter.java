@@ -12,6 +12,7 @@ public class PaddingRemoverWriter {
     private byte[] buffer;
     private boolean firstBlock;
     private boolean finished;
+    private int r;
     
     /**
      * Constructs a PaddingRemoverWriter instance from an OutputStream to write to and block size in bytes.
@@ -30,9 +31,11 @@ public class PaddingRemoverWriter {
      * Feeds a block of data with byteSize bytes into the stream.
      * 
      * @param block The block of data to feed.
+     * @return The number of bytes written to the output stream.
      * @throws IOException When OutputStream to be written to throws an error.
      */
-    public void feedBlock(byte[] block) throws IOException {
+    public int feedBlock(byte[] block) throws IOException {
+        r = 0;
         if (finished) {
             throw new IllegalStateException("writer already finished");
         }
@@ -41,24 +44,27 @@ public class PaddingRemoverWriter {
         }
         
         if (!firstBlock) {
+            r = buffer.length;
             stream.write(buffer);
         }
         System.arraycopy(block, 0, buffer, 0, buffer.length);
         firstBlock = false;
+        return r;
     }
     
     /**
      * To be called when there are no more blocks to feed.
      * 
+     * @return The number of bytes written to the output stream.
      * @throws IOException In case the underlying stream throws an exception.
      */
-    public void finish() throws IOException {
+    public int finish() throws IOException {
         if (finished) {
             throw new IllegalStateException("writer already finished");
         }
         if (firstBlock) {
             // no blcoks given, technically invalid but let's just say it's empty
-            return; // valid
+            return 0; // valid
         }
         
         // buffer now has last block, we need to see if it is all padding
@@ -74,7 +80,7 @@ public class PaddingRemoverWriter {
 
         if (isAllPadding) {
             // simple case; do not feed anything
-            return; // valid
+            return 0; // valid
         } else {
             // remove padding off the end
             byte last = buffer[buffer.length - 1];
@@ -90,7 +96,7 @@ public class PaddingRemoverWriter {
 
                 if (isValidPadding) {
                     stream.write(buffer, 0, buffer.length - last);
-                    return; // valid
+                    return buffer.length - last; // valid
                 } // else invalid
             } // else invalid
         }
