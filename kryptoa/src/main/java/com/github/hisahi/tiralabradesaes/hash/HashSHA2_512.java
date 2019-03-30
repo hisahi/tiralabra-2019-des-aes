@@ -20,14 +20,18 @@ public class HashSHA2_512 implements IHashFunction {
                                                  0x113f9804bef90daeL, 0x1b710b35131c471bL, 0x28db77f523047d84L, 0x32caab7b40c72493L, 0x3c9ebe0a15c9bebcL, 
                                                  0x431d67c49c100d4cL, 0x4cc5d4becb3e42b6L, 0x597f299cfc657e2aL, 0x5fcb6fab3ad6faecL, 0x6c44198c4a475817L };
     // temporary variables
-    private long h0, h1, h2, h3, h4, h5, h6, h7, tmp1, tmp2;
-    private long a, b, c, d, e, f, g, h, s0, s1, ch, maj;
+    protected long h0, h1, h2, h3, h4, h5, h6, h7;
+    private long a, b, c, d, e, f, g, h, s0, s1, ch, maj, tmp1, tmp2;
     private int n;
     private long[] w = new long[80];
     private long lengthInBits;
     private byte[] src;
-    private byte[] resHash = new byte[64];
+    protected byte[] resHash;
 
+    public HashSHA2_512() {
+        resHash = new byte[64];
+    }
+    
     @Override
     public int getHashLength() {
         return 64;
@@ -37,9 +41,15 @@ public class HashSHA2_512 implements IHashFunction {
     public int getBlockSize() {
         return 128;
     }
-
-    @Override
-    public byte[] computeHash(byte[] data) {
+    
+    protected void initHn() {
+        h0 = 0x6a09e667f3bcc908L; h1 = 0xbb67ae8584caa73bL;
+        h2 = 0x3c6ef372fe94f82bL; h3 = 0xa54ff53a5f1d36f1L;
+        h4 = 0x510e527fade682d1L; h5 = 0x9b05688c2b3e6c1fL;
+        h6 = 0x1f83d9abfb41bd6bL; h7 = 0x5be0cd19137e2179L;
+    }
+    
+    protected void computeHashInt(byte[] data) {
         n = (data.length + 144) & ~127;
         src = new byte[n];
         
@@ -53,11 +63,6 @@ public class HashSHA2_512 implements IHashFunction {
         src[n - 3] = (byte) (lengthInBits >>> 16);
         src[n - 2] = (byte) (lengthInBits >>>  8);
         src[n - 1] = (byte) (lengthInBits       );
-        
-        h0 = 0x6a09e667f3bcc908L; h1 = 0xbb67ae8584caa73bL;
-        h2 = 0x3c6ef372fe94f82bL; h3 = 0xa54ff53a5f1d36f1L;
-        h4 = 0x510e527fade682d1L; h5 = 0x9b05688c2b3e6c1fL;
-        h6 = 0x1f83d9abfb41bd6bL; h7 = 0x5be0cd19137e2179L;
         
         for (int i = 0; i < n; i += 128) {
             for (int j = 0; j < 16; ++j) {
@@ -96,12 +101,17 @@ public class HashSHA2_512 implements IHashFunction {
                 
                 h = g; g = f; f = e; e = tmp1 + d;
                 d = c; c = b; b = a; a = tmp1 + tmp2;
-                //System.out.println(String.format("%02d - A:%016x B:%016x C:%016x D:%016x E:%016x F:%016x G:%016x H:%016x", j, a, b, c, d, e, f, g, h));
             }
             
             h0 += a; h1 += b; h2 += c; h3 += d;
             h4 += e; h5 += f; h6 += g; h7 += h;
         } 
+    }
+
+    @Override
+    public byte[] computeHash(byte[] data) {
+        initHn();
+        computeHashInt(data);
         
         // write h0..7 to resHash
         resHash[ 0] = (byte) (h0 >>> 56); resHash[ 1] = (byte) (h0 >>> 48);
@@ -140,7 +150,7 @@ public class HashSHA2_512 implements IHashFunction {
     }
 
     @Override
-    public void reset() {
+    public void reset() {   
         h0 = h1 = h2 = h3 = h4 = h5 = h6 = h7 = tmp1 = tmp2 = 0;
         a = b = c = d = e = f = g = h = s0 = s1 = ch = maj = n = 0;
         lengthInBits = 0;

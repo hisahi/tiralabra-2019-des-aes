@@ -12,13 +12,17 @@ public class HashSHA2_256 implements IHashFunction {
                                                0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
                                                0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
     // temporary variables
-    private int h0, h1, h2, h3, h4, h5, h6, h7, tmp1, tmp2;
-    private int a, b, c, d, e, f, g, h, s0, s1, ch, maj, n;
+    protected int h0, h1, h2, h3, h4, h5, h6, h7;
+    private int a, b, c, d, e, f, g, h, s0, s1, ch, maj, n, tmp1, tmp2;
     private int[] w = new int[64];
     private long lengthInBits;
     private byte[] src;
-    private byte[] resHash = new byte[32];
+    protected byte[] resHash;
 
+    public HashSHA2_256() {
+        resHash = new byte[32];
+    }
+    
     @Override
     public int getHashLength() {
         return 32;
@@ -28,9 +32,15 @@ public class HashSHA2_256 implements IHashFunction {
     public int getBlockSize() {
         return 64;
     }
+    
+    protected void initHn() {
+        h0 = 0x6a09e667; h1 = 0xbb67ae85;
+        h2 = 0x3c6ef372; h3 = 0xa54ff53a;
+        h4 = 0x510e527f; h5 = 0x9b05688c;
+        h6 = 0x1f83d9ab; h7 = 0x5be0cd19;
+    }
 
-    @Override
-    public byte[] computeHash(byte[] data) {
+    public void computeHashInt(byte[] data) {
         n = (data.length + 72) & ~63;
         src = new byte[n];
         
@@ -44,11 +54,6 @@ public class HashSHA2_256 implements IHashFunction {
         src[n - 3] = (byte) (lengthInBits >>> 16);
         src[n - 2] = (byte) (lengthInBits >>>  8);
         src[n - 1] = (byte) (lengthInBits       );
-        
-        h0 = 0x6a09e667; h1 = 0xbb67ae85;
-        h2 = 0x3c6ef372; h3 = 0xa54ff53a;
-        h4 = 0x510e527f; h5 = 0x9b05688c;
-        h6 = 0x1f83d9ab; h7 = 0x5be0cd19;
         
         for (int i = 0; i < n; i += 64) {
             for (int j = 0; j < 16; ++j) {
@@ -88,6 +93,12 @@ public class HashSHA2_256 implements IHashFunction {
             h0 += a; h1 += b; h2 += c; h3 += d;
             h4 += e; h5 += f; h6 += g; h7 += h;
         } 
+    }
+    
+    @Override
+    public byte[] computeHash(byte[] data) {
+        initHn();
+        computeHashInt(data);
         
         // write h0..7 to resHash
         resHash[ 0] = (byte) (h0 >>> 24); resHash[ 1] = (byte) (h0 >>> 16);
