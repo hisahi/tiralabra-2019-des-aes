@@ -27,7 +27,7 @@ public class HashSHA2_256Test {
     }
 
     /**
-     * Test case for SHA1 hashing. The result has been tested against an
+     * Test case for SHA2-256 hashing. The result has been tested against an
      * implementation known to work correctly.
      */
     @Test
@@ -37,7 +37,7 @@ public class HashSHA2_256Test {
     }
 
     /**
-     * Test case for SHA1 hashing. The result has been tested against an
+     * Test case for SHA2-256 hashing. The result has been tested against an
      * implementation known to work correctly.
      */
     @Test
@@ -47,7 +47,7 @@ public class HashSHA2_256Test {
     }
 
     /**
-     * Test case for SHA1 hashing. The result has been tested against an
+     * Test case for SHA2-256 hashing. The result has been tested against an
      * implementation known to work correctly.
      */
     @Test
@@ -57,7 +57,7 @@ public class HashSHA2_256Test {
     }
 
     /**
-     * Test case for SHA1 hashing, with especially large data. The result has
+     * Test case for SHA2-256 hashing, with especially large data. The result has
      * been tested against an implementation known to work correctly.
      */
     @Test
