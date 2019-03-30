@@ -107,7 +107,7 @@ public class Main {
             break;
         }
         case HEX: {
-            byte[] chex = Utils.convertToHex(om.getInputString());
+            byte[] chex = Utils.convertHexToBytes(om.getInputString());
             if (chex == null) {
                 return printHelp("Invalid hex given for input");
             }

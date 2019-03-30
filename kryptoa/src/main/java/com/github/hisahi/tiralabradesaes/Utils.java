@@ -173,7 +173,7 @@ public final class Utils {
      * @param str The hex string to convert.
      * @return The converted byte array or null if the string is invalid.
      */
-    public static byte[] convertToHex(String str) {
+    public static byte[] convertHexToBytes(String str) {
         // remove spaces
         str = str.replace(" ", "");
         // odd length -> invalid
@@ -195,7 +195,25 @@ public final class Utils {
         
         return res;
     }
-
+    
+    /**
+     * Converts the given byte array into a hex string consisting of
+     * two hex digits for each byte, not separated with spaces or anything
+     * else. The hex digits will be in lowercase.
+     * 
+     * @param b The byte array to convert.
+     * @return The byte array as a hex string.
+     */
+    public static String convertBytesToHex(byte[] b) {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < b.length; ++i) {
+            sb.append(String.format("%02x", b[i] & 0xFF));
+        }
+        
+        return sb.toString();
+    }
+    
     /**
      * Dumps the given byte array with the given length into stdout as
      * hex. This function is primarily for debugging purposes.

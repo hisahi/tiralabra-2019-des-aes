@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class CipherTripleDESUnitTest {
     
-    private static final byte[] tdeskey = Utils.convertToHex("853F31351E51CD9C5222C28E408BF2A3853F31351E51CD9C");
+    private static final byte[] tdeskey = Utils.convertHexToBytes("853F31351E51CD9C5222C28E408BF2A3853F31351E51CD9C");
     private CipherTripleDES tdes;
     
     public CipherTripleDESUnitTest() {
@@ -27,23 +27,34 @@ public class CipherTripleDESUnitTest {
         } catch (IllegalStateException ex) {}
     }
 
+    /**
+     * Test case for 3DES encryption. The result has been tested against an 
+     * implementation known to work correctly.
+     */
     @Test
     public void testEncrypt() {
         tdes.initEncrypt(tdeskey);
-        byte[] res = tdes.process(Utils.convertToHex("675A69675E5A6B5A"));
-        assertArrayEquals(Utils.convertToHex("C3661F1925C8E8C2"), res);
+        byte[] res = tdes.process(Utils.convertHexToBytes("675A69675E5A6B5A"));
+        assertArrayEquals(Utils.convertHexToBytes("C3661F1925C8E8C2"), res);
     }
 
+    /**
+     * Test case for 3DES decryption. The result has been tested against an 
+     * implementation known to work correctly.
+     */
     @Test
     public void testDecrypt() {
         tdes.initDecrypt(tdeskey);
-        byte[] res = tdes.process(Utils.convertToHex("C3661F1925C8E8C2"));
-        assertArrayEquals(Utils.convertToHex("675A69675E5A6B5A"), res);
+        byte[] res = tdes.process(Utils.convertHexToBytes("C3661F1925C8E8C2"));
+        assertArrayEquals(Utils.convertHexToBytes("675A69675E5A6B5A"), res);
     }
 
+    /**
+     * Testing that encryption and decryption returns the original data.
+     */
     @Test
     public void testEncryptAndDecrypt() {
-        byte[] data = Utils.convertToHex("675A69675E5A6B5A");
+        byte[] data = Utils.convertHexToBytes("675A69675E5A6B5A");
         tdes.initEncrypt(tdeskey);
         byte[] res = tdes.process(Arrays.copyOf(data, data.length));
         res = Arrays.copyOf(res, res.length);
@@ -53,26 +64,40 @@ public class CipherTripleDESUnitTest {
         assertArrayEquals(data, tdes.process(res));
     }
 
+    /**
+     * The cipher should not accept keys of wrong size.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void notAllowingKeyOfWrongSize() {
-        tdes.initEncrypt(Utils.convertToHex("01"));
+        tdes.initEncrypt(Utils.convertHexToBytes("01"));
     }
 
+    /**
+     * The cipher should not accept blocks of wrong size.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void notAllowingBlockOfWrongSize() {
-        tdes.initEncrypt(Utils.convertToHex("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
-        tdes.process(Utils.convertToHex("01"));
+        tdes.initEncrypt(Utils.convertHexToBytes("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
+        tdes.process(Utils.convertHexToBytes("01"));
     }
 
+    /**
+     * process() should raise an exception when called before the cipher
+     * is initialized.
+     */
     @Test(expected = IllegalStateException.class)
     public void notProcessBeforeInit() {
-        tdes.process(Utils.convertToHex("01"));
+        tdes.process(Utils.convertHexToBytes("01"));
     }
 
+    /**
+     * process() should raise an exception when called between a call
+     * to finish() and a new initialization.
+     */
     @Test(expected = IllegalStateException.class)
     public void notProcessAfterFinish() {
-        tdes.initEncrypt(Utils.convertToHex("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
+        tdes.initEncrypt(Utils.convertHexToBytes("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
         tdes.finish();
-        tdes.process(Utils.convertToHex("01"));
+        tdes.process(Utils.convertHexToBytes("01"));
     }
 }

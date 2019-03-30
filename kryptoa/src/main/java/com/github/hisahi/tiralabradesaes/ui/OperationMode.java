@@ -140,7 +140,7 @@ class OperationMode {
      * @return Key given as a hex string parameter or null if invalid.
      */
     byte[] getKey() {
-        return Utils.convertToHex(key_str);
+        return Utils.convertHexToBytes(key_str);
     }
 
     /**
@@ -151,7 +151,7 @@ class OperationMode {
      * @return IV given as a hex string parameter or null if invalid.
      */
     byte[] getIV() {
-        return Utils.convertToHex(iv_str);
+        return Utils.convertHexToBytes(iv_str);
     }
     
     /**

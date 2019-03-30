@@ -23,12 +23,19 @@ public class BlockModeCTRTest {
         ctr = new BlockModeCTR(mbc);
     }
     
+    /**
+     * Only 8-byte 64-bit IVs should be valid (because the underlying
+     * mock encryption algorithm uses 8-byte 64-bit blocks).
+     */
     @Test
     public void correctVerifyIVSize() {
         assertTrue(ctr.isValidIVSize(8));
         assertFalse(ctr.isValidIVSize(9));
     }
     
+    /**
+     * Testing CTR encryption with one block and zero IV/nonce.
+     */
     @Test
     public void testCTRZeroIVOneBlocks() {
         ctr.initEncrypt(ZERO_NONCE);
@@ -40,6 +47,10 @@ public class BlockModeCTRTest {
         ctr.finish();
     }
     
+    /**
+     * Testing CTR encryption with one block and non-zero IV/nonce. The
+     * IV/nonce should be XORed into the resulting ciphertext block.
+     */
     @Test
     public void testCTRNonZeroIVOneBlocks() {
         ctr.initEncrypt(TEST_NONCE);
@@ -52,6 +63,11 @@ public class BlockModeCTRTest {
         ctr.finish();
     }
     
+    /**
+     * Testing CTR encryption with two blocks and non-zero IV/nonce. The
+     * IV/nonce should be XORed into the resulting ciphertext blocks. The
+     * second block should also have been XORed with an incremented counter.
+     */
     @Test
     public void testCTRNonZeroIVTwoBlocks() {
         ctr.initEncrypt(TEST_NONCE);
@@ -69,6 +85,10 @@ public class BlockModeCTRTest {
         ctr.finish();
     }
     
+    /**
+     * CTR as well as other block modes should be able to encrypt any input
+     * back into its original form.
+     */
     @Test
     public void testCTREncryptDecrypt() {
         ctr.initEncrypt(TEST_NONCE);
@@ -87,23 +107,38 @@ public class BlockModeCTRTest {
         ctr.finish();
     }
     
+    /**
+     * process() should raise an exception if the block mode is not initialized.
+     */
     @Test(expected = IllegalStateException.class)
     public void noInitIllegalState() {
         ctr.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
     }
     
+    /**
+     * process() should raise an exception if the block mode has not been
+     * initialized after a call to finish().
+     */
     @Test(expected = IllegalStateException.class)
     public void postFinishIllegalState() {
         ctr.finish();
         ctr.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
     }
     
+    /**
+     * The block mode should not allow two initializations without an 
+     * intermediate finish().
+     */
     @Test(expected = IllegalStateException.class)
     public void twoInitIllegalState() {
         ctr.initEncrypt(ZERO_NONCE);
         ctr.initDecrypt(ZERO_NONCE);
     }
     
+    /**
+     * The block mode should not allow two finish() calls without an
+     * intermediate initialization.
+     */
     @Test(expected = IllegalStateException.class)
     public void twoFinishIllegalState() {
         ctr.initEncrypt(ZERO_NONCE);
@@ -111,6 +146,10 @@ public class BlockModeCTRTest {
         ctr.finish();
     }
     
+    /**
+     * The block mode should not accept plaintext or ciphertext blocks
+     * that do not match the block size expected by the cipher.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void wrongBlockSizeIllegalArgument() {
         ctr.initDecrypt(ZERO_NONCE);

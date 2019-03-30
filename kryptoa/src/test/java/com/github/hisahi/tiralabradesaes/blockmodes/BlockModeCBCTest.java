@@ -23,12 +23,19 @@ public class BlockModeCBCTest {
         cbc = new BlockModeCBC(mbc);
     }
     
+    /**
+     * Only 8-byte 64-bit IVs should be valid (because the underlying
+     * mock encryption algorithm uses 8-byte 64-bit blocks).
+     */
     @Test
     public void correctVerifyIVSize() {
         assertTrue(cbc.isValidIVSize(8));
         assertFalse(cbc.isValidIVSize(9));
     }
     
+    /**
+     * Testing CBC encryption with one block and zero IV.
+     */
     @Test
     public void testCBCZeroIVOneBlocks() {
         cbc.initEncrypt(ZERO_IV);
@@ -40,6 +47,10 @@ public class BlockModeCBCTest {
         cbc.finish();
     }
     
+    /**
+     * Testing CBC encryption with one block and non-zero IV. The IV should
+     * be XORed into the resulting ciphertext block.
+     */
     @Test
     public void testCBCNonZeroIVOneBlocks() {
         cbc.initEncrypt(TEST_IV);
@@ -52,6 +63,11 @@ public class BlockModeCBCTest {
         cbc.finish();
     }
     
+    /**
+     * Testing CBC encryption with two blocks and non-zero IV. The IV should
+     * be XORed into the first resulting ciphertext block, while the second
+     * encrypted block should depend on the result of the last block.
+     */
     @Test
     public void testCBCNonZeroIVTwoBlocks() {
         cbc.initEncrypt(TEST_IV);
@@ -69,6 +85,10 @@ public class BlockModeCBCTest {
         cbc.finish();
     }
     
+    /**
+     * CBC as well as other block modes should be able to encrypt any input
+     * back into its original form.
+     */
     @Test
     public void testCBCEncryptDecrypt() {
         cbc.initEncrypt(TEST_IV);
@@ -87,23 +107,38 @@ public class BlockModeCBCTest {
         cbc.finish();
     }
     
+    /**
+     * process() should raise an exception if the block mode is not initialized.
+     */
     @Test(expected = IllegalStateException.class)
     public void noInitIllegalState() {
         cbc.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
     }
     
+    /**
+     * process() should raise an exception if the block mode has not been
+     * initialized after a call to finish().
+     */
     @Test(expected = IllegalStateException.class)
     public void postFinishIllegalState() {
         cbc.finish();
         cbc.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
     }
     
+    /**
+     * The block mode should not allow two initializations without an 
+     * intermediate finish().
+     */
     @Test(expected = IllegalStateException.class)
     public void twoInitIllegalState() {
         cbc.initEncrypt(ZERO_IV);
         cbc.initDecrypt(ZERO_IV);
     }
     
+    /**
+     * The block mode should not allow two finish() calls without an
+     * intermediate initialization.
+     */
     @Test(expected = IllegalStateException.class)
     public void twoFinishIllegalState() {
         cbc.initEncrypt(ZERO_IV);
@@ -111,6 +146,10 @@ public class BlockModeCBCTest {
         cbc.finish();
     }
     
+    /**
+     * The block mode should not accept plaintext or ciphertext blocks
+     * that do not match the block size expected by the cipher.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void wrongBlockSizeIllegalArgument() {
         cbc.initDecrypt(ZERO_IV);

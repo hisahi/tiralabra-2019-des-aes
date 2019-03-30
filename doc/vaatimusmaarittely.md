@@ -27,9 +27,12 @@ Tilavaativuus on O(1), sillä muistissa ei jouduta pitämään syötteen koosta 
 Vaativuus ei tosin ole merkittävänä tavoitteena vaan varsinainen nopeus. Nopeutta voidaan verrata olemassaolevien ja oikeasti luotettavien salausohjelmien nopeuteen.
 
 # Lähteet
-* [FIPS PUB 46-3: Data Encryption Standard](http://csrc.nist.gov/publications/fips/fips46-3/fips46-3.pdf)
-* [NIST Special Publication 800-67 Revision 2: Recommendation for the Triple Data Encryption Algorithm (TDEA) Block Cipher](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-67r2.pdf)
-* [FIPS PUB 197: Advanced Encryption Standard (AES)](https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.197.pdf)
+* [FIPS PUB 46-3: Data Encryption Standard](
+  http://csrc.nist.gov/publications/fips/fips46-3/fips46-3.pdf)
+* [NIST Special Publication 800-67 Revision 2: Recommendation for the Triple Data Encryption Algorithm (TDEA) Block Cipher](
+  https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-67r2.pdf)
+* [FIPS PUB 197: Advanced Encryption Standard (AES)](
+  https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.197.pdf)
 
 
 

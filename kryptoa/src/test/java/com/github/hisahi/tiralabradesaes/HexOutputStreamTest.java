@@ -30,6 +30,10 @@ public class HexOutputStreamTest {
         pis.close();
     }
 
+    /**
+     * Simple test for a single byte that should properly be encoded into
+     * two hex digits.
+     */
     @Test
     public void testHexEncode() throws IOException {
         hos.write(0x27);
@@ -37,6 +41,11 @@ public class HexOutputStreamTest {
         assertEquals('7', pis.read());
     }
 
+    /**
+     * Simple test for a negative byte that should properly be encoded into
+     * two hex digits. Java does not have unsigned types which makes it
+     * easy to incorporate such mistakes.
+     */
     @Test
     public void testHexNegative() throws IOException {
         hos.write(0x91);

@@ -4,6 +4,8 @@ import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
 
 /**
  * A mock IBlockCipher for testing IBlockMode implementations.
+ * It uses 8-byte 64-bit blocks, but only in principle, as any data given
+ * will not be modified in any way.
  */
 public class MockBlockCipher implements IBlockCipher {
 

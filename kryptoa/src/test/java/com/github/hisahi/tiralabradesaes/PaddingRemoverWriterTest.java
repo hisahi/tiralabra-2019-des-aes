@@ -20,12 +20,26 @@ public class PaddingRemoverWriterTest {
         prw = new PaddingRemoverWriter(os, 8);
     }
 
+    /**
+     * Since we give nothing to remove padding from, it shouldn't be giving 
+     * us anything.
+     * 
+     * @throws IOException Only happens if the piped streams fail for whatever
+     * reason.
+     */
     @Test
     public void noBlocksGiven() throws IOException {
         prw.finish(); os.flush(); os.close();
         assertEquals(-1, is.read());
     }
 
+    /**
+     * A block with full padding will only have bytes corresponding to the
+     * length of that block. It should be removed correctly.
+     * 
+     * @throws IOException Only happens if the piped streams fail for whatever
+     * reason.
+     */
     @Test
     public void removeFullPadding() throws IOException {
         prw.feedBlock(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
@@ -36,6 +50,14 @@ public class PaddingRemoverWriterTest {
         assertEquals(-1, is.read());
     }
 
+    /**
+     * A block with partial padding will be padded with bytes corresponding
+     * to the number of bytes that had to be added to pad the block. This
+     * padding should be removed correctly.
+     * 
+     * @throws IOException Only happens if the piped streams fail for whatever
+     * reason.
+     */
     @Test
     public void removePartialPadding() throws IOException {
         prw.feedBlock(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 2, 2});
