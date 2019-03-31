@@ -3,6 +3,11 @@ package com.github.hisahi.tiralabradesaes.keyderiv;
 
 import java.util.Arrays;
 
+/**
+ * Implements PBKDF2 (Password-Based Key Derivation Function 2), a key
+ * derivation function that takes in a passphrase and salt and turns
+ * them into a cryptographic key.
+ */
 public class KeyDerivPBKDF2 implements IKeyDerivation {
     
     private HMACFunction hmac;

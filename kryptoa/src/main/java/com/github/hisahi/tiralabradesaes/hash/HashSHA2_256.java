@@ -12,11 +12,17 @@ public class HashSHA2_256 implements IHashFunction {
                                                0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
                                                0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
     // temporary variables
+    /**
+     * Temporary variables h0-h7 used in the SHA-2 computation process.
+     */
     protected int h0, h1, h2, h3, h4, h5, h6, h7;
     private int a, b, c, d, e, f, g, h, s0, s1, ch, maj, n, tmp1, tmp2;
     private int[] w = new int[64];
     private long lengthInBits;
     private byte[] src;
+    /**
+     * A byte array for the result hash.
+     */
     protected byte[] resHash;
 
     public HashSHA2_256() {
@@ -33,6 +39,9 @@ public class HashSHA2_256 implements IHashFunction {
         return 64;
     }
     
+    /**
+     * Initializes the constants H0..H7.
+     */
     protected void initHn() {
         h0 = 0x6a09e667; h1 = 0xbb67ae85;
         h2 = 0x3c6ef372; h3 = 0xa54ff53a;
@@ -40,7 +49,13 @@ public class HashSHA2_256 implements IHashFunction {
         h6 = 0x1f83d9ab; h7 = 0x5be0cd19;
     }
 
-    public void computeHashInt(byte[] data) {
+    /**
+     * Computes the actual SHA-2 hash values. Not intended to be
+     * used directly but through computeHash().
+     * 
+     * @param data The data to compute the hash for.
+     */
+    protected void computeHashInt(byte[] data) {
         n = (data.length + 72) & ~63;
         src = new byte[n];
         
