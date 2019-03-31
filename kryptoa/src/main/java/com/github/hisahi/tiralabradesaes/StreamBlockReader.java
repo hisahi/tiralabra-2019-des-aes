@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Represents a blocked version of InputStream that converts a stream into blocks suitable for encryption and decryption with block ciphers.
+ * Represents a blocked version of InputStream that converts a stream into 
+ * blocks suitable for encryption and decryption with block ciphers.
  */
 public class StreamBlockReader {
     private InputStream stream;
@@ -15,7 +16,8 @@ public class StreamBlockReader {
     private boolean willPad;
     
     /**
-     * Creates a new BlockInputStream from an existing InputStream and a size of the block in bytes (* 8 for size in bits).
+     * Creates a new BlockInputStream from an existing InputStream and a size 
+     * of the block in bytes (* 8 for size in bits).
      * 
      * @param inp The InputStream to wrap.
      * @param byteSize The size of the block in bytes.
@@ -25,13 +27,15 @@ public class StreamBlockReader {
     }
     
     /**
-     * Creates a new BlockInputStream from an existing InputStream and a size of the block in bytes (* 8 for size in bits).
+     * Creates a new BlockInputStream from an existing InputStream and a size 
+     * of the block in bytes (* 8 for size in bits).
      * 
      * @param inp The InputStream to wrap.
      * @param byteSize The size of the block in bytes.
      * @param allowPadding Whether to add PKCS padding to the stream.
      */
-    public StreamBlockReader(InputStream inp, int byteSize, boolean allowPadding) {
+    public StreamBlockReader(InputStream inp, int byteSize, 
+                             boolean allowPadding) {
         stream = inp;
         buffer = new byte[byteSize];
         blockPointer = 0;
@@ -57,14 +61,16 @@ public class StreamBlockReader {
         // read until the block is full or we reach EOF
         int read;
         while (blockPointer < buffer.length) {
-            read = stream.read(buffer, blockPointer, buffer.length - blockPointer);
+            read = stream.read(buffer, blockPointer,
+                               buffer.length - blockPointer);
             if (read < 0) {
                 // EOF
                 if (willPad) {
                     if (blockPointer == 0) { // EOF exactly to block boundaries
                         reachedEof = true;
                         if (willPad) {
-                            // PKCS padding; give empty block with bytes representing block length
+                            // PKCS padding; give empty block with bytes 
+                            // representing block length
                             for (int i = 0; i < buffer.length; ++i) {
                                 buffer[i] = (byte) buffer.length;
                             }
@@ -74,8 +80,10 @@ public class StreamBlockReader {
                         reachedEof = true;
                         if (willPad) {
                             // PKCS padding; pad rest of block
-                            byte addPadding = (byte) (buffer.length - blockPointer);
-                            for (int i = blockPointer; i < buffer.length; ++i) {
+                            byte addPadding = (byte) 
+                                        (buffer.length - blockPointer);
+                            for (int i = blockPointer; 
+                                     i < buffer.length; ++i) {
                                 buffer[i] = addPadding;
                             }
                         }

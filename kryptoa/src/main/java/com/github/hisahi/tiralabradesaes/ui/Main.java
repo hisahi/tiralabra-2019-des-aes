@@ -1,6 +1,7 @@
 
 package com.github.hisahi.tiralabradesaes.ui; 
 
+import com.github.hisahi.tiralabradesaes.Base64OutputStream;
 import com.github.hisahi.tiralabradesaes.HexOutputStream;
 import com.github.hisahi.tiralabradesaes.PaddingRemoverWriter;
 import com.github.hisahi.tiralabradesaes.StreamBlockReader;
@@ -30,7 +31,7 @@ public class Main {
 
     private static int printHelp() {
         System.out.println("Usage:");
-        System.out.println("    { -enc  | -dec } { asc | hex | file }");
+        System.out.println("    { -enc  | -dec } { asc | hex | b64 | file }");
         System.out.println("    { DES | 3DES | AES }");
         System.out.println("    { ECB | CBC <iv> | CTR <nonce> } -key <key>");
         System.out.println("    [input ascii/hex/file] [output file]");
@@ -38,7 +39,8 @@ public class Main {
         System.out.println("For example:");
         System.out.println("    -enc hex DES ECB -key 853f31351e51cd9c ff00");
         System.out.println("");
-        System.out.println("Input hex or file is necessary in hex/file modes.");
+        System.out.println("Input hex, b64 or file is necessary in");
+        System.out.println("hex/b64/file modes.");
         System.out.println("Output file is necessary in file mode.");
         return 2;
     }
@@ -71,16 +73,20 @@ public class Main {
             return printHelp("Invalid hex given for IV");
         }
         
-        if (key.length == 7 && om.getCipherType() == OperationMode.Cipher.DES) {
+        if (key.length == 7 
+                        && om.getCipherType() == OperationMode.Cipher.DES) {
             // expand key
             key = Utils.prepareDESKey(key);
-        } else if (key.length == 14 && om.getCipherType() == OperationMode.Cipher.TDES) {
+        } else if (key.length == 14 
+                        && om.getCipherType() == OperationMode.Cipher.TDES) {
             // expand key
             key = Utils.prepare3DESKeyFrom14Bytes(key);
-        } else if (key.length == 16 && om.getCipherType() == OperationMode.Cipher.TDES) {
+        } else if (key.length == 16 
+                        && om.getCipherType() == OperationMode.Cipher.TDES) {
             // expand key
             key = Utils.prepare3DESKeyFrom16Bytes(key);
-        } else if (key.length == 21 && om.getCipherType() == OperationMode.Cipher.TDES) {
+        } else if (key.length == 21 
+                        && om.getCipherType() == OperationMode.Cipher.TDES) {
             // expand key
             key = Utils.prepare3DESKey(key);
         }
@@ -119,14 +125,29 @@ public class Main {
             os = new HexOutputStream(System.out);
             break;
         }
+        case BASE64: {
+            byte[] chex = Utils.convertBase64ToBytes(om.getInputString());
+            if (chex == null) {
+                return printHelp("Invalid base64 given for input");
+            }
+
+            PipedOutputStream pout = new PipedOutputStream();
+            is = new PipedInputStream(pout);
+            pout.write(chex);
+            pout.close();
+            os = new Base64OutputStream(System.out);
+            break;
+        }
         case FILE: {
-            is = new BufferedInputStream(new FileInputStream(om.getInputString()));
+            is = new BufferedInputStream(new FileInputStream(
+                                            om.getInputString()));
             if (!overwriteAlways && new File(om.getOutputString()).exists()) {
                 if (!confirmPrompt("Overwrite output file")) {
                     return 2;
                 }
             }
-            os = new BufferedOutputStream(new FileOutputStream(om.getOutputString()));
+            os = new BufferedOutputStream(new FileOutputStream(
+                                            om.getOutputString()));
         }
         }
         
@@ -139,7 +160,8 @@ public class Main {
         long processBytes     = 0;
             
         if (om.getDirection() == OperationMode.Direction.ENCRYPT) {
-            StreamBlockReader sbr = new StreamBlockReader(is, bc.getBlockSizeInBytes());
+            StreamBlockReader sbr = new StreamBlockReader(is, 
+                                        bc.getBlockSizeInBytes());
             bc.initEncrypt(key);
             bm.initEncrypt(iv);
             
@@ -154,8 +176,10 @@ public class Main {
             bm.finish();
             bc.finish();
         } else if (om.getDirection() == OperationMode.Direction.DECRYPT) {
-            StreamBlockReader sbr = new StreamBlockReader(is, bc.getBlockSizeInBytes(), false);
-            PaddingRemoverWriter prw = new PaddingRemoverWriter(os, bc.getBlockSizeInBytes());
+            StreamBlockReader sbr = new StreamBlockReader(is, 
+                                        bc.getBlockSizeInBytes(), false);
+            PaddingRemoverWriter prw = new PaddingRemoverWriter(os, 
+                                        bc.getBlockSizeInBytes());
             
             bc.initDecrypt(key);
             bm.initDecrypt(iv);

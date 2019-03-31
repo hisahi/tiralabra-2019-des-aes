@@ -124,6 +124,29 @@ public class UtilsTest {
     }
     
     /**
+     * The function convertBase64ToBytes should correctly convert a series
+     * of bytes represented in Base64 to a byte array and return null
+     * in case of invalid input.
+     */
+    @Test
+    public void testConvertBase64ToBytes() {
+        assertArrayEquals(new byte[] {}, 
+                Utils.convertBase64ToBytes(""));
+        assertArrayEquals(new byte[] { 0x66 }, 
+                Utils.convertBase64ToBytes("Zg=="));
+        assertArrayEquals(new byte[] { 0x66, 0x6f }, 
+                Utils.convertBase64ToBytes("Zm8="));
+        assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f }, 
+                Utils.convertBase64ToBytes("Zm9v"));
+        assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f, 0x62 }, 
+                Utils.convertBase64ToBytes("Zm9vYg=="));
+        assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f, 0x62, 0x61 }, 
+                Utils.convertBase64ToBytes("Zm9vYmE="));
+        assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72 }, 
+                Utils.convertBase64ToBytes("Zm9vYmFy"));
+    }
+    
+    /**
      * The function convertBytesToHex should correctly convert any byte
      * array into a series of hex digits, two for each byte. The function
      * should give the hex digits in lowercase.

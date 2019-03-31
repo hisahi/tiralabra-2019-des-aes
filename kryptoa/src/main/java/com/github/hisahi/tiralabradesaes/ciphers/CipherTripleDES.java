@@ -41,7 +41,8 @@ public class CipherTripleDES implements IBlockCipher {
             throw new IllegalStateException("already init");
         }
         if (key.length != 24) {
-            throw new IllegalArgumentException("key must be 192-bit, 24 bytes");
+            throw new IllegalArgumentException("key must be 192-bit, "
+                                             + "24 bytes");
         }
         
         init = true;
@@ -68,7 +69,8 @@ public class CipherTripleDES implements IBlockCipher {
             throw new IllegalStateException("already init");
         }
         if (key.length != 24) {
-            throw new IllegalArgumentException("key must be 192-bit, 24 bytes");
+            throw new IllegalArgumentException("key must be 192-bit, "
+                                             + "24 bytes");
         }
         
         init = true;

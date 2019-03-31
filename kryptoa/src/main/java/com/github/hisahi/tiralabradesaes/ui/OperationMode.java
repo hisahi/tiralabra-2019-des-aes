@@ -228,7 +228,7 @@ class OperationMode {
      * Represents the I/O mode.
      */
     enum IOMode { 
-        ASCII, HEX, FILE; 
+        ASCII, HEX, BASE64, FILE; 
 
         /**
          * Converts a command-line parameter to an IOMode.
@@ -241,6 +241,8 @@ class OperationMode {
                 return ASCII;
             } else if (arg.equalsIgnoreCase("hex")) {
                 return HEX;
+            } else if (arg.equalsIgnoreCase("b64")) {
+                return BASE64;
             } else if (arg.equalsIgnoreCase("file")) {
                 return FILE;
             }

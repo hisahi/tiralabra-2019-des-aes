@@ -61,7 +61,8 @@ public class CipherDES implements IBlockCipher {
         // Utils.prepareDESKey to prepare from 56-bit 7-byte array key to
         // 64-bit 8-byte array key.
         if (key.length != 8) {
-            throw new IllegalArgumentException("key must be 64-bit, 8 bytes, with odd parity");
+            throw new IllegalArgumentException("key must be 64-bit, 8 bytes, "
+                                             + "with odd parity");
         }
         
         if (!validParity(key)) {
@@ -95,8 +96,10 @@ public class CipherDES implements IBlockCipher {
         // generate key schedule
         for (int i = 0; i < 16; ++i) {
             // rotate keys
-            avainvas = ((avainvas << KEY_ROTS[i]) | (avainvas >>> (28 - KEY_ROTS[i]))) & 0xFFFFFFF0L;
-            avainoik = ((avainoik << KEY_ROTS[i]) | (avainoik >>> (28 - KEY_ROTS[i]))) & 0xFFFFFFF0L;
+            avainvas = ((avainvas << KEY_ROTS[i]) 
+                      | (avainvas >>> (28 - KEY_ROTS[i]))) & 0xFFFFFFF0L;
+            avainoik = ((avainoik << KEY_ROTS[i]) 
+                      | (avainoik >>> (28 - KEY_ROTS[i]))) & 0xFFFFFFF0L;
             
             // generate subkey (lots of obscure bit math but this encodes PC-2)
             a1 = extractPC2Bits(avainvas, 18, 15, 21,  8, 31, 27);
@@ -135,7 +138,8 @@ public class CipherDES implements IBlockCipher {
         return (tmp & 0x0101010101010101L) == 0x0101010101010101L;
     }
         
-    private long extractPC2Bits(long key, int a, int b, int c, int d, int e, int f) {
+    private long extractPC2Bits(long key, int a, int b, int c, 
+                                          int d, int e, int f) {
         return   ((key >> a) & 1L) << 5
                | ((key >> b) & 1L) << 4
                | ((key >> c) & 1L) << 3
@@ -171,7 +175,8 @@ public class CipherDES implements IBlockCipher {
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
-            block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (j & 7)) & 1L) << (i & 7);
+            block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (j & 7)) & 1L)
+                                                     << (i & 7);
         }
     }
 
@@ -181,7 +186,8 @@ public class CipherDES implements IBlockCipher {
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
-            block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (7 ^ j & 7)) & 1L) << ((7 ^ i) & 7);
+            block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (7 ^ j & 7)) & 1L) 
+                                                     << ((7 ^ i) & 7);
         }
     }
     

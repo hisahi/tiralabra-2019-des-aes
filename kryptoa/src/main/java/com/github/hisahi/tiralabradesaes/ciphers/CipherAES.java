@@ -52,7 +52,8 @@ public class CipherAES implements IBlockCipher {
             throw new IllegalStateException("already init");
         }
         if (!isValidKeySize(key.length)) {
-            throw new IllegalArgumentException("invalid key size; must be 128b, 192b or 256b");
+            throw new IllegalArgumentException("invalid key size; must be "
+                                             + "128b, 192b or 256b");
         }
         
         // number of rounds depends on key size
@@ -107,7 +108,8 @@ public class CipherAES implements IBlockCipher {
                     | ((AES_S[(t >>>  8) & 0xFF]) & 0xFF) <<  8
                     | ((AES_S[(t       ) & 0xFF]) & 0xFF);
                 t ^= AES_RCON[(i / kN) - 1];
-                keyOut[i & 3][i >> 2] = keyOut[(i - kN) & 3][(i - kN) >> 2] ^ t;
+                keyOut[i & 3][i >> 2] = t ^
+                                    keyOut[(i - kN) & 3][(i - kN) >> 2];
             } else if (kN > 6 & (i % kN) == 4) {
                 t = keyOut[(i - 1) & 3][(i - 1) >> 2]; 
                 // AES SubWord
@@ -115,7 +117,8 @@ public class CipherAES implements IBlockCipher {
                     | ((AES_S[(t >>> 16) & 0xFF]) & 0xFF) << 16
                     | ((AES_S[(t >>>  8) & 0xFF]) & 0xFF) <<  8
                     | ((AES_S[(t       ) & 0xFF]) & 0xFF);
-                keyOut[i & 3][i >> 2] = keyOut[(i - kN) & 3][(i - kN) >> 2] ^ t;
+                keyOut[i & 3][i >> 2] = t ^ 
+                                    keyOut[(i - kN) & 3][(i - kN) >> 2];
             } else {
                 keyOut[i & 3][i >> 2] = keyOut[(i - kN) & 3][(i - kN) >> 2]
                                       ^ keyOut[(i -  1) & 3][(i -  1) >> 2];

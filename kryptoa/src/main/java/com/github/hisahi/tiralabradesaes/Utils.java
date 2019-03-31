@@ -10,6 +10,11 @@ import java.util.Scanner;
  */
 public final class Utils {
     private static final String HEX_DIGITS = "0123456789abcdef";
+            static final String B64_DIGITS = "ABCDEFGHIJKLMNOP"
+                                           + "QRSTUVWXYZabcdef"
+                                           + "ghijklmnopqrstuv"
+                                           + "wxyz0123456789+/"
+                                           + "="; // padding
     private static final Random rng = new Random();
     
     /**
@@ -23,16 +28,23 @@ public final class Utils {
      */
     public static byte[] prepareDESKey(byte[] rawKey) {
         if (rawKey.length != 7) {
-            throw new IllegalArgumentException("must give 7-byte 56-bit key to prepare");
+            throw new IllegalArgumentException("must give 7-byte 56-bit "
+                                             + "key to prepare");
         }
         byte[] prepKey = new byte[8];
         prepKey[0] = (byte) (rawKey[0] & 0xFE);
-        prepKey[1] = (byte) (((rawKey[0] & 0x01) << 7) | ((rawKey[1] & 0xFC) >> 1));
-        prepKey[2] = (byte) (((rawKey[1] & 0x03) << 6) | ((rawKey[2] & 0xF8) >> 2));
-        prepKey[3] = (byte) (((rawKey[2] & 0x07) << 5) | ((rawKey[3] & 0xF0) >> 3));
-        prepKey[4] = (byte) (((rawKey[3] & 0x0F) << 4) | ((rawKey[4] & 0xE0) >> 4));
-        prepKey[5] = (byte) (((rawKey[4] & 0x1F) << 3) | ((rawKey[5] & 0xC0) >> 5));
-        prepKey[6] = (byte) (((rawKey[5] & 0x3F) << 2) | ((rawKey[6] & 0x80) >> 6));
+        prepKey[1] = (byte) (((rawKey[0] & 0x01) << 7) 
+                           | ((rawKey[1] & 0xFC) >> 1));
+        prepKey[2] = (byte) (((rawKey[1] & 0x03) << 6) 
+                           | ((rawKey[2] & 0xF8) >> 2));
+        prepKey[3] = (byte) (((rawKey[2] & 0x07) << 5) 
+                           | ((rawKey[3] & 0xF0) >> 3));
+        prepKey[4] = (byte) (((rawKey[3] & 0x0F) << 4) 
+                           | ((rawKey[4] & 0xE0) >> 4));
+        prepKey[5] = (byte) (((rawKey[4] & 0x1F) << 3) 
+                           | ((rawKey[5] & 0xC0) >> 5));
+        prepKey[6] = (byte) (((rawKey[5] & 0x3F) << 2) 
+                           | ((rawKey[6] & 0x80) >> 6));
         prepKey[7] = (byte) (((rawKey[6] & 0x7F) << 1));
         // now 0x00 < prepKey[0..8] < 0x80
         // now add parity
@@ -54,7 +66,8 @@ public final class Utils {
      */
     public static byte[] prepare3DESKeyFrom14Bytes(byte[] rawKey) {
         if (rawKey.length != 14) {
-            throw new IllegalArgumentException("must give 14-byte 112-bit key to prepare");
+            throw new IllegalArgumentException("must give 14-byte 112-bit "
+                                             + "key to prepare");
         }
         byte[] midKey = new byte[21];
         
@@ -78,7 +91,8 @@ public final class Utils {
      */
     public static byte[] prepare3DESKey(byte[] rawKey) {
         if (rawKey.length != 21) {
-            throw new IllegalArgumentException("must give 21-byte 168-bit key to prepare");
+            throw new IllegalArgumentException("must give 21-byte 168-bit "
+                                             + "key to prepare");
         }
         byte[] prepKeys = new byte[24];
         
@@ -113,7 +127,8 @@ public final class Utils {
      */
     public static byte[] prepare3DESKeyFrom16Bytes(byte[] rawKey) {
         if (rawKey.length != 16) {
-            throw new IllegalArgumentException("must give 16-byte 128-bit key to prepare");
+            throw new IllegalArgumentException("must give 16-byte 128-bit "
+                                             + "key to prepare");
         }
         byte[] resKey = new byte[24];
         
@@ -141,7 +156,8 @@ public final class Utils {
     public static int destroyArray(byte[] arr) {
         int j = 0;
         for (int i = 0; i < arr.length; ++i) {
-            arr[i] = (byte) ((0x55 ^ (0xFF - ((i & 255) * 149))) ^ rng.nextInt());
+            arr[i] = (byte) ((0x55 ^ (0xFF - ((i & 255) * 149))) 
+                            ^ rng.nextInt());
             j = (j + i + arr[i]) % 257;
         }
         return j;
@@ -161,7 +177,7 @@ public final class Utils {
         }
         return j;
     }
-
+    
     /**
      * Converts the given hex string to a byte array. The string is expected
      * to contain an even number of hex digits, possibly spaced apart. If the
@@ -195,6 +211,47 @@ public final class Utils {
         
         return res;
     }
+
+    /**
+     * Converts the given Base64 string to a byte array. The string is expected
+     * to contain only Base64 digits without any spacing. Digits 62 and 63
+     * are + and / and the padding character is =.
+     * 
+     * An empty string will not return null but an empty byte array, that is
+     * a byte[] with length 0.
+     * 
+     * @param str The Base64 string to convert.
+     * @return The converted byte array or null if the string is invalid.
+     */
+    public static byte[] convertBase64ToBytes(String str) {
+        byte[] res = new byte[str.length() * 3 / 4];
+        int totalBytes = 0;
+        
+        if (str.length() % 4 != 0) {
+            return null; // length must be divisible by 4
+        }
+        
+        for (int i = 0; i < str.length(); i += 4) {
+            int b1 = B64_DIGITS.indexOf(str.charAt(i));
+            int b2 = B64_DIGITS.indexOf(str.charAt(i + 1));
+            int b3 = B64_DIGITS.indexOf(str.charAt(i + 2));
+            int b4 = B64_DIGITS.indexOf(str.charAt(i + 3));
+            
+            if (b1 < 0 || b2 < 0 || b3 < 0 || b4 < 0
+                    || b1 == 64 || b2 == 64) {
+                // invalid Base64
+                return null;
+            }
+            
+            res[totalBytes++] = (byte) ((b1 <<  2) | (b2 >>>  4));
+            if (b3 < 64)
+                res[totalBytes++] = (byte) ((b2 <<  4) | (b3 >>>  2));
+            if (b4 < 64)
+                res[totalBytes++] = (byte) ((b3 <<  6) | (b4       ));
+        }
+        
+        return Arrays.copyOf(res, totalBytes);
+    }
     
     /**
      * Converts the given byte array into a hex string consisting of
@@ -215,10 +272,10 @@ public final class Utils {
     }
     
     /**
-     * Dumps the given byte array with the given length into stdout as
-     * hex. This function is primarily for debugging purposes.
+     * Dumps the given byte array with the given length into the standard
+     * output as hex. This function is primarily for debugging purposes.
      * 
-     * @param block The block to dump into stdout.
+     * @param block The block to dump into standard output.
      * @param length The length of the block to dump.
      */
     public static void dumpBlock(byte[] block, int length) {

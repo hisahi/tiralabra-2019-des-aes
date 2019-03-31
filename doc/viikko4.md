@@ -11,4 +11,4 @@ Seuraavaksi työnä on yhdistää PBKDF2 käyttöliittymään niin, että avaime
 Hankalin osa oli toteutus- ja testausdokumentin kirjoitus, eikä sekään ollut hankalaa. SHA1- ja SHA2-toteutukset sekä HMAC ja PBKDF2 menivät yllättävän sulavasti; edellä mainitusta kaksi meni ensimmäisellä kerralla oikein ilman testejäkin.
 
 # Aika
-Käytetty aika noin 11 tuntia.
+Käytetty aika noin 12 tuntia.

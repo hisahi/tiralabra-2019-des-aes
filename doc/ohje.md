@@ -19,8 +19,9 @@ osionsa.
 Tilan jälkeen määritellään syötteen ja tulosteen tila. Tiloja on kolme:
 `asc` salaa/purkaa annetusta syötteestä standarditulosteeseen sellaisenaan,
 `hex` salaa/purkaa annetusta syötteestä heksamuodossa olevaa tietoa heksa-
-muotoiseksi tiedoksi ja `file` salaa/purkaa tiedostosta tiedostoon. Lopussa
-annettavat tiedot riippuvat juuri tästä tilasta.
+muotoiseksi tiedoksi, `b64` tekee saman mutta Base64-muodossa ja `file` 
+salaa/purkaa tiedostosta tiedostoon. Lopussa annettavat tiedot riippuvat
+juuri tästä tilasta.
 
 Tämän jälkeen annetaan salausalgoritmiksi joko `DES`, `3DES` tai `AES`.
 Ensimmäinen odottaa 56- tai 64-bittistä avainta, toinen joko 112-, 128-,
@@ -47,8 +48,8 @@ ja luetaan sen alusta purettaessa.
 Tämän jälkeen tilasta riippuen annetaan syöte ja tuloste. `asc`-tilassa
 syötteeksi voi antaa salattavan tai purettavan merkkijonon, mutta jos sitä
 ei anneta, ohjelma lukee tietoa standardisyötteestä. `hex`-tilassa syöte
-tulee tarjota heksamuodossa. `file`-tilassa tulee tarjota sekä syötetiedoston
-nimi että tulostetiedoston nimi.
+tulee tarjota heksamuodossa ja `b64`-tilassa Base64-muodossa. `file`-tilassa 
+tulee tarjota sekä syötetiedoston nimi että tulostetiedoston nimi.
 
 ## `-test`
 TODO

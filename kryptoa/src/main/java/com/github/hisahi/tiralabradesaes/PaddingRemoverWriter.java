@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * A class that writes to an OutputStream, removing PKCS padding from the blocks it has been given.
+ * A class that writes to an OutputStream, removing PKCS padding from the 
+ * blocks it has been given.
  */
 public class PaddingRemoverWriter {
     private OutputStream stream;
@@ -15,7 +16,8 @@ public class PaddingRemoverWriter {
     private int r;
     
     /**
-     * Constructs a PaddingRemoverWriter instance from an OutputStream to write to and block size in bytes.
+     * Constructs a PaddingRemoverWriter instance from an OutputStream to 
+     * write to and block size in bytes.
      * 
      * @param os The OutputStream to write to.
      * @param byteSize The block size in bytes.
@@ -63,7 +65,7 @@ public class PaddingRemoverWriter {
             throw new IllegalStateException("writer already finished");
         }
         if (firstBlock) {
-            // no blcoks given, technically invalid but let's just say it's empty
+            // no blcoks given, invalid but let's just say it's empty
             return 0; // valid
         }
         
@@ -87,7 +89,8 @@ public class PaddingRemoverWriter {
             if (last > 0 && last < buffer.length) {
                 boolean isValidPadding = true;
 
-                for (int i = buffer.length - last + 1; i < buffer.length; ++i) {
+                for (int i = buffer.length - last + 1; 
+                         i < buffer.length; ++i) {
                     if (buffer[i] != last) {
                         isValidPadding = false;
                         break;
