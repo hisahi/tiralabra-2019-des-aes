@@ -1,6 +1,9 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+/**
+ * Implements SHA-256, the version of SHA-2 that creates 256-bit hashes.
+ */
 public class HashSHA2_256 implements IHashFunction {
     // constant
     private static final int[] k = new int[] { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -40,7 +43,8 @@ public class HashSHA2_256 implements IHashFunction {
     }
     
     /**
-     * Initializes the constants H0..H7.
+     * Initializes the constants H0..H7. Not intended to be
+     * used directly but through computeHash() or an implementation of such.
      */
     protected void initHn() {
         h0 = 0x6a09e667; h1 = 0xbb67ae85;
@@ -51,7 +55,7 @@ public class HashSHA2_256 implements IHashFunction {
 
     /**
      * Computes the actual SHA-2 hash values. Not intended to be
-     * used directly but through computeHash().
+     * used directly but through computeHash() or an implementation of such.
      * 
      * @param data The data to compute the hash for.
      */

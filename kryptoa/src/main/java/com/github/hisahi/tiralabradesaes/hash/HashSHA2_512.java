@@ -1,6 +1,9 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+/**
+ * Implements SHA-512, the version of SHA-2 that creates 512-bit hashes.
+ */
 public class HashSHA2_512 implements IHashFunction {
     // constant
     private static final long[] k = new long[] { 0x428a2f98d728ae22L, 0x7137449123ef65cdL, 0xb5c0fbcfec4d3b2fL, 0xe9b5dba58189dbbcL, 0x3956c25bf348b538L, 
@@ -49,7 +52,8 @@ public class HashSHA2_512 implements IHashFunction {
     }
     
     /**
-     * Initializes the constants H0..H7.
+     * Initializes the constants H0..H7. Not intended to be
+     * used directly but through computeHash() or an implementation of such.
      */
     protected void initHn() {
         h0 = 0x6a09e667f3bcc908L; h1 = 0xbb67ae8584caa73bL;
@@ -60,7 +64,7 @@ public class HashSHA2_512 implements IHashFunction {
     
     /**
      * Computes the actual SHA-2 hash values. Not intended to be
-     * used directly but through computeHash().
+     * used directly but through computeHash() or an implementation of such.
      * 
      * @param data The data to compute the hash for.
      */

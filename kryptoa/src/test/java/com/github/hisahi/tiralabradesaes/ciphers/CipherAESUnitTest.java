@@ -134,6 +134,27 @@ public class CipherAESUnitTest {
     }
 
     /**
+     * Two consecutive initialization calls without an intermediate finish()
+     * should fail.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void notDoubleInit() {
+        aes.initEncrypt(Utils.convertHexToBytes("000102030405060708090a0b0c0d0e0f"));
+        aes.initDecrypt(Utils.convertHexToBytes("000102030405060708090a0b0c0d0e0f"));
+    }
+
+    /**
+     * Two consecutive finish() calls without an intermediate initialization
+     * should fail.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void notDoubleFinish() {
+        aes.initEncrypt(Utils.convertHexToBytes("000102030405060708090a0b0c0d0e0f"));
+        aes.finish();
+        aes.finish();
+    }
+
+    /**
      * process() should raise an exception when called between a call
      * to finish() and a new initialization.
      */

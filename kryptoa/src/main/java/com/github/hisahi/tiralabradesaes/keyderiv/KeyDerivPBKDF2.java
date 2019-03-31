@@ -49,8 +49,9 @@ public class KeyDerivPBKDF2 implements IKeyDerivation {
         
         for (int i = 0; i < key.length; i += hmac.getHashLength()) {
             // increment fullSalt
-            for (int j = fullSalt.length - 1; j >= 0; --j) {
-                // increment last byte, but if it wraps around, keep going (ripple)
+            for (int j = fullSalt.length - 1; j >= salt.length; --j) {
+                // increment last byte, but keep going if wraparound (ripple)
+                // the last uint32 should not wrap into salt itself
                 if (++fullSalt[j] != 0) {
                     break;
                 }
@@ -66,7 +67,8 @@ public class KeyDerivPBKDF2 implements IKeyDerivation {
             }
             
             // copy HMAC to key, truncate if necessary
-            System.arraycopy(v, 0, key, i, Math.min(i + hmac.getHashLength(), key.length) - i);
+            System.arraycopy(v, 0, key, i, Math.min(i + hmac.getHashLength(), 
+                    key.length) - i);
         }
         hmac.reset();
     }

@@ -3,6 +3,9 @@ package com.github.hisahi.tiralabradesaes.hash;
 
 import java.util.Arrays;
 
+/**
+ * Implements SHA-1, or Secure Hash Algorithm 1.
+ */
 public class HashSHA1 implements IHashFunction {
     // temporary variables
     private int h0, h1, h2, h3, h4, tmp;

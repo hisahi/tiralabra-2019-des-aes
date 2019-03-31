@@ -37,14 +37,14 @@ public class HMACFunctionTest {
     }
     
     /**
-     * Test case for HMAC SHA-256 with empty key and message. The result has
+     * Test case for HMAC SHA-256 with a sample key and message. The result has
      * been tested against an implementation known to work correctly.
      */
     @Test
     public void hmacSha2_256Empty() {
         hmac = new HMACFunction(new HashSHA2_256());
         assertEquals("f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8",  Utils.convertBytesToHex(hmac.computeHmac(
-                     "".getBytes(StandardCharsets.UTF_8), 
-                     "".getBytes(StandardCharsets.UTF_8))));
+                     "key".getBytes(StandardCharsets.UTF_8), 
+                     "The quick brown fox jumps over the lazy dog".getBytes(StandardCharsets.UTF_8))));
     }
 }

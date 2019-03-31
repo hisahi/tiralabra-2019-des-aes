@@ -39,11 +39,14 @@ public class BlockModeCTR implements IBlockMode {
     }
     
     private void initBase(byte[] iv) {
+        if (iv.length != ctriv.length) {
+            throw new IllegalArgumentException("wrong size for IV");
+        }
         if (init) {
             throw new IllegalStateException("already init");
         }
+        
         init = true;
-        assert iv.length == ctriv.length;
         // init IV
         System.arraycopy(iv, 0, ctriv, 0, iv.length);
         // init counter, tempbuf

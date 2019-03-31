@@ -32,9 +32,10 @@ public class StreamBlockReaderTest {
      */
     @Test
     public void partialPadding4() throws IOException {
-        os.write(new byte[] {0x11, 0x12, 0x13, 0x14});
+        os.write(Utils.convertHexToBytes("11121314"));
         os.close();
-        assertArrayEquals(new byte[] {0x11, 0x12, 0x13, 0x14, 4, 4, 4, 4}, bis.nextBlock());
+        assertEquals("1112131404040404", 
+                     Utils.convertBytesToHex(bis.nextBlock()));
         assertEquals(null, bis.nextBlock());
     }
     
@@ -47,9 +48,10 @@ public class StreamBlockReaderTest {
      */
     @Test
     public void partialPadding1() throws IOException {
-        os.write(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
+        os.write(Utils.convertHexToBytes("11121314151617"));
         os.close();
-        assertArrayEquals(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 1}, bis.nextBlock());
+        assertEquals("1112131415161701", 
+                     Utils.convertBytesToHex(bis.nextBlock()));
         assertEquals(null, bis.nextBlock());
     }
     
@@ -62,10 +64,12 @@ public class StreamBlockReaderTest {
      */
     @Test
     public void fullPadding() throws IOException {
-        os.write(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
+        os.write(Utils.convertHexToBytes("1112131415161718"));
         os.close();
-        assertArrayEquals(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18}, bis.nextBlock());
-        assertArrayEquals(new byte[] {8, 8, 8, 8, 8, 8, 8, 8}, bis.nextBlock());
+        assertEquals("1112131415161718", 
+                     Utils.convertBytesToHex(bis.nextBlock()));
+        assertEquals("0808080808080808", 
+                     Utils.convertBytesToHex(bis.nextBlock()));
         assertEquals(null, bis.nextBlock());
     }
 }

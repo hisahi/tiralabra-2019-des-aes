@@ -2,7 +2,8 @@
 package com.github.hisahi.tiralabradesaes.ciphers;
 
 /**
- * Interface for block ciphers.
+ * Interface for block ciphers. Block ciphers are not meant to be used
+ * directly but via a block mode implementing the IBlockMode interface.
  */
 public interface IBlockCipher {
     

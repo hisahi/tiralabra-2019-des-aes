@@ -34,12 +34,14 @@ public class BlockModeCBC implements IBlockMode {
     }
     
     private void initBase(byte[] iv) {
+        if (iv.length != lastBlock.length) {
+            throw new IllegalArgumentException("wrong size for IV");
+        }
         if (init) {
             throw new IllegalStateException("already init");
         }
         init = true;
         // init lastBlock
-        assert iv.length == lastBlock.length;
         System.arraycopy(iv, 0, lastBlock, 0, lastBlock.length);
     }
     

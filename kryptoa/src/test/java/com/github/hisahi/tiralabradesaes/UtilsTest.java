@@ -10,8 +10,10 @@ public class UtilsTest {
      */
     @Test
     public void testPrepareDESKey() {
-        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194}, 
-                          Utils.prepareDESKey(new byte[] {0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
+        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 
+                                      7, (byte)162, (byte)188, (byte)194}, 
+                Utils.prepareDESKey(new byte[] {
+                        0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
     }
     
     /**
@@ -20,12 +22,16 @@ public class UtilsTest {
      */
     @Test
     public void testPrepare3DESKey() {
-        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194,
-                                      26, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194,
-                                      42, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194}, 
-                          Utils.prepare3DESKey(new byte[] {0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
-                                                           0x1b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
-                                                           0x2b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
+        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 7, 
+                                      (byte)162, (byte)188, (byte)194,
+                                      26, (byte)185, (byte)158, 47, 7, 
+                                      (byte)162, (byte)188, (byte)194,
+                                      42, (byte)185, (byte)158, 47, 7, 
+                                      (byte)162, (byte)188, (byte)194}, 
+                Utils.prepare3DESKey(new byte[] {
+                        0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
+                        0x1b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
+                        0x2b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
     }
     
     /**
@@ -35,11 +41,15 @@ public class UtilsTest {
      */
     @Test
     public void testPrepare3DESKeyFrom14Bytes() {
-        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194,
-                                      42, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194,
-                                      74, (byte)185, (byte)158, 47, 7, (byte)162, (byte)188, (byte)194}, 
-               Utils.prepare3DESKeyFrom14Bytes(new byte[] {0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
-                                                           0x2b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
+        assertArrayEquals(new byte[] {74, (byte)185, (byte)158, 47, 
+                                      7, (byte)162, (byte)188, (byte)194,
+                                      42, (byte)185, (byte)158, 47, 
+                                      7, (byte)162, (byte)188, (byte)194,
+                                      74, (byte)185, (byte)158, 47, 
+                                      7, (byte)162, (byte)188, (byte)194}, 
+               Utils.prepare3DESKeyFrom14Bytes(new byte[] {
+                        0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61,
+                        0x2b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x61}));
     }
     
     /**
@@ -49,11 +59,17 @@ public class UtilsTest {
      */
     @Test
     public void testPrepare3DESKeyFrom16Bytes() {
-        assertArrayEquals(new byte[] {(byte)0x85, 0x3F, 0x31, 0x35, 0x1E, 0x51, (byte)0xCD, (byte)0x9C,
-                                      0x52, 0x22, (byte)0xC2, (byte)0x8E, 0x40, (byte)0x8B, (byte)0xF2, (byte)0xA3,
-                                      (byte)0x85, 0x3F, 0x31, 0x35, 0x1E, 0x51, (byte)0xCD, (byte)0x9C}, 
-           Utils.prepare3DESKeyFrom16Bytes(new byte[] {(byte)0x85, 0x3F, 0x31, 0x35, 0x1E, 0x51, (byte)0xCD, (byte)0x9C,
-                                                       0x52, 0x22, (byte)0xC2, (byte)0x8E, 0x40, (byte)0x8B, (byte)0xF2, (byte)0xA3}));
+        assertArrayEquals(new byte[] {(byte)0x85, 0x3F, 0x31, 0x35, 
+                                      0x1E, 0x51, (byte)0xCD, (byte)0x9C,
+                                      0x52, 0x22, (byte)0xC2, (byte)0x8E, 
+                                      0x40, (byte)0x8B, (byte)0xF2, (byte)0xA3,
+                                      (byte)0x85, 0x3F, 0x31, 0x35,
+                                      0x1E, 0x51, (byte)0xCD, (byte)0x9C}, 
+           Utils.prepare3DESKeyFrom16Bytes(new byte[] {
+                        (byte)0x85, 0x3F, 0x31, 0x35, 
+                        0x1E, 0x51, (byte)0xCD, (byte)0x9C,
+                        0x52, 0x22, (byte)0xC2, (byte)0x8E, 
+                        0x40, (byte)0x8B, (byte)0xF2, (byte)0xA3}));
     }
     
     /**
@@ -95,11 +111,16 @@ public class UtilsTest {
      */
     @Test
     public void testConvertHexToBytes() {
-        assertArrayEquals(new byte[] {0, 17, 34}, Utils.convertHexToBytes("001122"));
-        assertArrayEquals(new byte[] {-1, -128}, Utils.convertHexToBytes("ff 80"));
-        assertArrayEquals(new byte[] {}, Utils.convertHexToBytes(""));
-        assertArrayEquals(null, Utils.convertHexToBytes("f"));
-        assertArrayEquals(null, Utils.convertHexToBytes("ggg"));
+        assertArrayEquals(new byte[] {0, 17, 34}, 
+                Utils.convertHexToBytes("001122"));
+        assertArrayEquals(new byte[] {-1, -128}, 
+                Utils.convertHexToBytes("ff 80"));
+        assertArrayEquals(new byte[] {}, 
+                Utils.convertHexToBytes(""));
+        assertArrayEquals(null, 
+                Utils.convertHexToBytes("f"));
+        assertArrayEquals(null, 
+                Utils.convertHexToBytes("ggg"));
     }
     
     /**
@@ -110,8 +131,11 @@ public class UtilsTest {
     @Test
     public void testConvertBytesToHex() {
         assertEquals("", Utils.convertBytesToHex(new byte[] {}));
-        assertEquals("0001020304", Utils.convertBytesToHex(new byte[] { 0, 1, 2, 3, 4 }));
-        assertEquals("0abcdef9", Utils.convertBytesToHex(new byte[] { 10, -68, -34, -7 }));
-        assertEquals("ff0055aa", Utils.convertBytesToHex(new byte[] { -1, 0, 85, -86 }));
+        assertEquals("0001020304", 
+                Utils.convertBytesToHex(new byte[] { 0, 1, 2, 3, 4 }));
+        assertEquals("0abcdef9", 
+                Utils.convertBytesToHex(new byte[] { 10, -68, -34, -7 }));
+        assertEquals("ff0055aa", 
+                Utils.convertBytesToHex(new byte[] { -1, 0, 85, -86 }));
     }
 }

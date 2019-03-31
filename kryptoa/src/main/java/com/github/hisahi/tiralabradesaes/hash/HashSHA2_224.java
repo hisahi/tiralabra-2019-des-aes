@@ -1,6 +1,9 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+/**
+ * Implements SHA-224, the version of SHA-2 that creates 224-bit hashes.
+ */
 public class HashSHA2_224 extends HashSHA2_256 {
     protected byte[] resHash;
     

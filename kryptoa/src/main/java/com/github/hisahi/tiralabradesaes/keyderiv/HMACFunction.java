@@ -82,6 +82,7 @@ public class HMACFunction {
     /**
      * Resets internal variables, recommended to be called after no more
      * HMACs need to be computed within a given function to improve security.
+     * Also calls the reset() method of the underlying hash algorithm.
      */
     public void reset() {
         h.reset();

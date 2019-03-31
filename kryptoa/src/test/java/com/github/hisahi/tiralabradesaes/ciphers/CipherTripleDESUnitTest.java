@@ -91,6 +91,27 @@ public class CipherTripleDESUnitTest {
     }
 
     /**
+     * Two consecutive initialization calls without an intermediate finish()
+     * should fail.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void notDoubleInit() {
+        tdes.initEncrypt(Utils.convertHexToBytes("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
+        tdes.initDecrypt(Utils.convertHexToBytes("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
+    }
+
+    /**
+     * Two consecutive finish() calls without an intermediate initialization
+     * should fail.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void notDoubleFinish() {
+        tdes.initEncrypt(Utils.convertHexToBytes("5B5A57676A56676E5B5A57676A56676E5B5A57676A56676E"));
+        tdes.finish();
+        tdes.finish();
+    }
+
+    /**
      * process() should raise an exception when called between a call
      * to finish() and a new initialization.
      */

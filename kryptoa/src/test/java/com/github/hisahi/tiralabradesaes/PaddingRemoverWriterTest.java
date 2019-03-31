@@ -42,9 +42,9 @@ public class PaddingRemoverWriterTest {
      */
     @Test
     public void removeFullPadding() throws IOException {
-        prw.feedBlock(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18});
+        prw.feedBlock(Utils.convertHexToBytes("1112131415161718"));
         // full padding block
-        prw.feedBlock(new byte[] {8, 8, 8, 8, 8, 8, 8, 8});
+        prw.feedBlock(Utils.convertHexToBytes("0808080808080808"));
         prw.finish(); os.flush(); os.close();
         assertEquals(8, is.read(new byte[8]));
         assertEquals(-1, is.read());
@@ -60,7 +60,7 @@ public class PaddingRemoverWriterTest {
      */
     @Test
     public void removePartialPadding() throws IOException {
-        prw.feedBlock(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 2, 2});
+        prw.feedBlock(Utils.convertHexToBytes("1112131415160202"));
         prw.finish(); os.flush(); os.close();
         assertEquals(6, is.read(new byte[8]));
         assertEquals(-1, is.read());

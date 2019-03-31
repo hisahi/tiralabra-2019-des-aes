@@ -1,6 +1,9 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+/**
+ * Implements SHA-384, the version of SHA-2 that creates 384-bit hashes.
+ */
 public class HashSHA2_384 extends HashSHA2_512 {
     protected byte[] resHash;
     
