@@ -1,5 +1,5 @@
 # DES-3DES-AES -vertailu
-**For English speakers: the cryptographic encoders and decoders of this project is written for research purposes only. DO NOT USE IT IN ANY PRODUCTION CODE; THE CODE IS LIKELY IMPLEMENTED WRONG AND SUSCEPTIBLE TO ATTACKS, INCLUDING BUT NOT LIMITED TO, SIDE-CHANNEL ATTACKS.**
+**For English speakers: the cryptographic encoders and decoders of this project is written for research purposes only. DO NOT USE IT IN ANY PRODUCTION CODE; THE CODE IS LIKELY IMPLEMENTED WRONG AND SUSCEPTIBLE TO ATTACKS INCLUDING, BUT NOT LIMITED TO, SIDE-CHANNEL ATTACKS.**
 
 Tietorakenteiden ja algoritmien harjoitustyö periodille IV 2018-2019.
 
