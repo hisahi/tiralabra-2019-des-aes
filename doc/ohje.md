@@ -68,8 +68,8 @@ Kaikkien näiden alkuun kuuluu komennon merkkijono, eli esimerkiksi
   * Salaa tiedoston `file.zip` tiedostosta `file.key` löytyvällä
     avaimella ja alustusvektorilla tiedostoon `file.zip.tds`. Käytettävänä
     algoritmina on 3DES eli Triple-DES ja lohkotilana CBC.
-* `-enc hex AES CBC 55555555555555555555555555555555 `
-  `-key AA9DCA3BA4DE72155C652AE17CFA6926CFD12ADDBB2B212C 00`
+* `-enc hex AES CBC 55555555555555555555555555555555
+   -key AA9DCA3BA4DE72155C652AE17CFA6926CFD12ADDBB2B212C 00`
   * Salaa yhden 0-tavun AES-algoritmilla ja CBC-lohkotilalla, missä
     alustusvektori on `55555555555555555555555555555555` ja avain on
     `AA9DCA3BA4DE72155C652AE17CFA6926CFD12ADDBB2B212C` (192 bittiä).
