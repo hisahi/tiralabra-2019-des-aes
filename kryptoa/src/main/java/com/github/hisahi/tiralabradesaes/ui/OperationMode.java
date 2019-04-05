@@ -10,6 +10,7 @@ import com.github.hisahi.tiralabradesaes.ciphers.CipherAES;
 import com.github.hisahi.tiralabradesaes.ciphers.CipherDES;
 import com.github.hisahi.tiralabradesaes.ciphers.CipherTripleDES;
 import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A class for representing the mode of operation of the program as given
@@ -17,20 +18,22 @@ import com.github.hisahi.tiralabradesaes.ciphers.IBlockCipher;
  */
 class OperationMode {
     private final Direction direction;
-    private final Cipher cipher;
-    private final BlockMode blockmode;
     private final IOMode iomode;
+    private final KeyMode keymode;
     private final String key_str;
     private final String iv_str;
     private final String input;
     private final String output;
+    private Cipher cipher;
+    private BlockMode blockmode;
     
     public OperationMode(Direction dir, Cipher ciph, BlockMode bm, IOMode io, 
-            String k, String nonce, String in, String out) {
+            KeyMode km, String k, String nonce, String in, String out) {
         direction = dir;
         cipher = ciph;
         blockmode = bm;
         iomode = io;
+        keymode = km;
         key_str = k;
         iv_str = nonce;
         input = in;
@@ -72,6 +75,15 @@ class OperationMode {
      */
     Direction getDirection() {
         return direction;
+    }
+    
+    /**
+     * Gets the chosen key mode (either hex key, password or key file).
+     * 
+     * @return The key mode chosen via parameters.
+     */
+    KeyMode getKeyMode() {
+        return keymode;
     }
     
     /**
@@ -132,6 +144,30 @@ class OperationMode {
         }
         return null;
     }
+    
+    /**
+     * Gets the given key parameter as a string. Used if the key parameter
+     * turns out to not be hex or a password, meaning that it has to be
+     * a file path.
+     * 
+     * @return The key parameter given.
+     */
+    String getKeyString() {
+        return key_str;
+    }
+    
+    /**
+     * Gets the password used to derive a key, if the given key parameter
+     * was a password. Password must begin with a quote and end with one
+     * when given as a parameter; these quotes are not considered part
+     * of the password.
+     * 
+     * @return The password, or null if a password was not given.
+     */
+    byte[] getKeyPassword() {
+        return key_str.substring(1, key_str.length() - 1)
+                    .getBytes(StandardCharsets.UTF_8);
+    }
 
     /**
      * Returns the key as a byte array, converted from the given hex string.
@@ -139,8 +175,29 @@ class OperationMode {
      * 
      * @return Key given as a hex string parameter or null if invalid.
      */
-    byte[] getKey() {
+    byte[] getKeyHex() {
         return Utils.convertHexToBytes(key_str);
+    }
+    
+    /**
+     * Whether an IV was given in the first place. If false, isIVRandom()
+     * will return false and getIVHex() will return null.
+     * 
+     * @return Whether an IV was given as a parameter.
+     */
+    boolean wasIVGiven() {
+        return iv_str != null && !iv_str.isEmpty();
+    }
+    
+    /**
+     * Whether to generate a random IV; occurs when - is given as the IV.
+     * If this is true, the calling code is responsible for generating the
+     * IV, and getIVHex() will return nothing useful.
+     * 
+     * @return Whether to generate a random IV.
+     */
+    boolean isIVRandom() {
+        return iv_str.equalsIgnoreCase("-");
     }
 
     /**
@@ -150,15 +207,33 @@ class OperationMode {
      * 
      * @return IV given as a hex string parameter or null if invalid.
      */
-    byte[] getIV() {
+    byte[] getIVHex() {
         return Utils.convertHexToBytes(iv_str);
+    }
+    
+    /**
+     * Changes the cipher used by this OperationNode.
+     * 
+     * @param ciph The new Cipher to use.
+     */
+    void setCipher(Cipher ciph) {
+        cipher = ciph;
+    }
+    
+    /**
+     * Changes the block mode used by this OperationNode.
+     * 
+     * @param bm The new BlockMode to use.
+     */
+    void setBlockMode(BlockMode bm) {
+        blockmode = bm;
     }
     
     /**
      * Represents the direction of operation.
      */
     enum Direction { 
-        ENCRYPT, DECRYPT;
+        ENCRYPT, DECRYPT, TEST;
 
         /**
          * Converts a command-line parameter to a Direction.
@@ -171,6 +246,8 @@ class OperationMode {
                 return ENCRYPT;
             } else if (arg.equalsIgnoreCase("-dec")) {
                 return DECRYPT;
+            } else if (arg.equalsIgnoreCase("-test")) {
+                return TEST;
             }
             return null;
         }
@@ -244,6 +321,30 @@ class OperationMode {
             } else if (arg.equalsIgnoreCase("b64")) {
                 return BASE64;
             } else if (arg.equalsIgnoreCase("file")) {
+                return FILE;
+            }
+            return null;
+        }
+    }
+    
+    /**
+     * Represents the key mode.
+     */
+    enum KeyMode { 
+        HEX, PASS, FILE; 
+
+        /**
+         * Converts a command-line parameter to a KeyMode.
+         * 
+         * @param arg The command-line parameter.
+         * @return Converted type or null if invalid.
+         */
+        static KeyMode fromArgument(String arg) {
+            if (arg.equalsIgnoreCase("-key")) {
+                return HEX;
+            } else if (arg.equalsIgnoreCase("-pass")) {
+                return PASS;
+            } else if (arg.equalsIgnoreCase("-kfile")) {
                 return FILE;
             }
             return null;

@@ -8,12 +8,12 @@ import java.util.Arrays;
  */
 public class HashSHA1 implements IHashFunction {
     // temporary variables
+    private final int[] w = new int[80];
+    private final byte[] resHash = new byte[20];
     private int h0, h1, h2, h3, h4, tmp;
     private int a, b, c, d, e, f, k, n;
-    private int[] w = new int[80];
     private long lengthInBits;
     private byte[] src;
-    private byte[] resHash = new byte[20];
 
     @Override
     public int getHashLength() {

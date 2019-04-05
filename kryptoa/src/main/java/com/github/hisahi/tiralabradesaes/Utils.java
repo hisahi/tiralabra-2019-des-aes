@@ -1,6 +1,11 @@
 
 package com.github.hisahi.tiralabradesaes; 
 
+import com.github.hisahi.tiralabradesaes.ciphers.CipherChaCha20;
+import com.github.hisahi.tiralabradesaes.hash.HashSHA2_512;
+import com.github.hisahi.tiralabradesaes.keyderiv.HMACFunction;
+import com.github.hisahi.tiralabradesaes.keyderiv.IKeyDerivation;
+import com.github.hisahi.tiralabradesaes.keyderiv.KeyDerivPBKDF2;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
@@ -15,7 +20,8 @@ public final class Utils {
                                            + "ghijklmnopqrstuv"
                                            + "wxyz0123456789+/"
                                            + "="; // padding
-    private static final Random rng = new Random();
+    private static final MT19937 rng = new MT19937();
+    private static CipherChaCha20 cha = null;
     
     /**
      * Converts a 7-byte 56-bit DES key to the full 8-byte 64-bit DES key.
@@ -269,6 +275,49 @@ public final class Utils {
         }
         
         return sb.toString();
+    }
+
+    /**
+     * Fills the given byte array with random bytes NOT suitable for
+     * cryptographic purposes.
+     * 
+     * Implementation detail: MT19937 is used to generate the numbers.
+     * 
+     * @param res The byte array to fill.
+     */
+    public static void generateWeakRandom(byte[] res) {
+        rng.nextBytes(res);
+    }
+
+    /**
+     * Fills the given byte array with random bytes generated using a 
+     * cryptographically secure pseudo random number generator.
+     * 
+     * Implementation detail: ChaCha20, a stream cipher, is used to
+     * generate the numbers; it is supplied a (weakly) random key and 
+     * nonce, after which the cipher will supply strongly random
+     * numbers.
+     * 
+     * @param res The byte array to fill.
+     */
+    public static void generateStrongRandom(byte[] res) {
+        if (cha == null) {
+            cha = new CipherChaCha20();
+        }
+        
+        byte[] key = new byte[32];
+        byte[] non = new byte[8];
+        
+        generateWeakRandom(key);
+        generateWeakRandom(non);
+        
+        cha.init(key, non);
+        Arrays.fill(res, (byte) 0);
+        
+        byte[] rnd = cha.process(res);
+        cha.finish();
+        
+        System.arraycopy(rnd, 0, res, 0, res.length);
     }
     
     /**

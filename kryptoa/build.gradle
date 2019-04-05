@@ -5,7 +5,7 @@ apply plugin: 'application'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-mainClassName = 'com.github.hisahi.tiralabradesaes.ui.Main'
+mainClassName = 'com.github.hisahi.tiralabradesaes.ui.TestMain'
 
 repositories {
     mavenCentral()

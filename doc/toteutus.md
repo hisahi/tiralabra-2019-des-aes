@@ -1,10 +1,10 @@
 # Toteutus
-Ohjelma toteuttaa kolme eri lohkosalausalgoritmia: DES, 3DES sekä AES. Vaikka
+Ohjelma toteuttaa kolme eri lohkosalainta: DES, 3DES sekä AES. Vaikka
 jokaisessa ohjelmoijalle näkyvä osa on samanlainen (syötä tietynkokoinen
 "lohko" dataa, joka puretaan tai salataan annetulla avaimella),
 toimintaperiaatteet ovat oikeastaan pintaa syvemmältä huomattavankin
-erilaiset. Lohkosalausalgoritmia käyttäessä tulee myös valita
-lohkosalaustila, joita ohjelma tarjoaa kolme: ECB, CBC and CTR.
+erilaiset. Lohkosalainta käyttäessä tulee myös valita lohkosalaustila, 
+joita ohjelma tarjoaa kolme: ECB, CBC and CTR.
 
 # Salaus
 
@@ -26,7 +26,7 @@ tiedon määrästä ja on siten O(n), sillä esimerkiksi Feistelin funktio
 ei muutu datan määrästä riippuen.
 
 ## Triple-DES, 3DES
-Tämä salausalgoritmi toimii yksinkertaisesti kolminkertaisella DES:llä.
+Tämä salain toimii yksinkertaisesti kolminkertaisella DES:llä.
 Esimerkiksi yhden lohkon salauksessa lohko salataan DES:llä ensimmäisellä
 avaimella, puretaan toisella ja salataan kolmannella. Kolmea avainta
 käytetään kahden sijasta, koska kahden avaimen käyttäminen ei lisäisi
@@ -92,20 +92,20 @@ ohjelmia vastaan, ja salatut syötteet ovat yhteensopivia.
 # Ohjelman rakenne
 Ohjelman rakenteesta käytetään laajasti hyödyksi olio-ohjelmoinnin
 rakenteita, kuten rajapintoja (protokollia) sekä luokkia. Esimerkiksi kaikki
-salausalgoritmit ja lohkotilat perustuvat rajapintaan, jonka mukaan
-niiden on toteutettava alustus, lohkon käsittely ja lopetus. Tarkempi
-rakenne esimerkiksi tiedoston salaukseen on seuraava:
+Salaimet ja lohkotilat perustuvat rajapintaan, jonka mukaan niiden on 
+toteutettava alustus, lohkon käsittely ja lopetus. Tarkempi ohje 
+esimerkiksi tiedoston salaukseen on seuraava:
 
 1. Annettu tiedosto avataan.
-2. Lohkotila ja salausalgoritmi alustetaan annetulla avaimella ja
-   aloitusvektorilla. Tämän lisäksi alustetaan täydennystä tarjoava
-   StreamBlockReader.
+2. Lohkotila ja salain alustetaan annetulla avaimella ja aloitusvektorilla. 
+   Lohkotilan alustaminen alustaa myös salaimen. Tämän lisäksi alustetaan
+   täydennystä tarjoava StreamBlockReader.
 3. Kunnes lohkot loppuvat:
   1. Luetaan yksi lohko StreamBlockReaderista. Jos lohko vaatii
      täydennystä, luokka osaa lisätä sen; muussa tapauksessa lohko
      on sama kuin tavuvirrasta lue tieto.
   2. Kyseinen lohko annetaan lohkotilan toteuttavalle luokalle.
-  3. Tämä luokka taas salaa lohkon annetulla salausalgoritmilla ja
+  3. Tämä luokka taas salaa lohkon annetulla salaimella ja
      palauttaa saamansa lohkon.
   4. Saatu lohko kirjoitetaan ulostulotiedostoon.
 

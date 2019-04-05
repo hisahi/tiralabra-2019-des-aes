@@ -55,13 +55,16 @@ public class BlockModeCTR implements IBlockMode {
     }
     
     @Override
-    public void initEncrypt(byte[] iv) {
+    public void initEncrypt(byte[] key, byte[] iv) {
         initBase(iv);
+        ciph.initEncrypt(key);
     }
     
     @Override
-    public void initDecrypt(byte[] iv) {
+    public void initDecrypt(byte[] key, byte[] iv) {
         initBase(iv);
+        // this is not a typo! CTR uses encryption for both directions
+        ciph.initEncrypt(key);
     }
 
     @Override
@@ -101,6 +104,7 @@ public class BlockModeCTR implements IBlockMode {
         Arrays.fill(counter, (byte) 0);
         Arrays.fill(tempbuf, (byte) 0);
         Arrays.fill(cb, (byte) 0);
+        ciph.finish();
     }
 
     /**

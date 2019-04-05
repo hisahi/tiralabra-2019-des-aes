@@ -5,7 +5,6 @@ import com.github.hisahi.tiralabradesaes.Utils;
 import com.github.hisahi.tiralabradesaes.hash.HashSHA1;
 import com.github.hisahi.tiralabradesaes.hash.HashSHA2_256;
 import java.nio.charset.StandardCharsets;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

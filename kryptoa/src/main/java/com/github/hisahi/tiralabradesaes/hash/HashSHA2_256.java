@@ -27,9 +27,9 @@ public class HashSHA2_256 implements IHashFunction {
     /**
      * Temporary variables h0-h7 used in the SHA-2 computation process.
      */
+    private final int[] w = new int[64];
     protected int h0, h1, h2, h3, h4, h5, h6, h7;
     private int a, b, c, d, e, f, g, h, s0, s1, ch, maj, n, tmp1, tmp2;
-    private int[] w = new int[64];
     private long lengthInBits;
     private byte[] src;
     /**

@@ -40,7 +40,7 @@ public class BlockModeCBCTest {
      */
     @Test
     public void testCBCZeroIVOneBlocks() {
-        cbc.initEncrypt(ZERO_IV);
+        cbc.initEncrypt(new byte[] {0}, ZERO_IV);
         
         byte[] data = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                   0x15, 0x16, 0x17, 0x18};
@@ -56,7 +56,7 @@ public class BlockModeCBCTest {
      */
     @Test
     public void testCBCNonZeroIVOneBlocks() {
-        cbc.initEncrypt(TEST_IV);
+        cbc.initEncrypt(new byte[] {0}, TEST_IV);
         
         byte[] data = new byte[] {0x11, 0x12, 0x13, 0x14,  
                                   0x15, 0x16, 0x17, 0x18};
@@ -75,7 +75,7 @@ public class BlockModeCBCTest {
      */
     @Test
     public void testCBCNonZeroIVTwoBlocks() {
-        cbc.initEncrypt(TEST_IV);
+        cbc.initEncrypt(new byte[] {0}, TEST_IV);
         
         byte[] data1 = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                    0x15, 0x16, 0x17, 0x18};
@@ -100,7 +100,7 @@ public class BlockModeCBCTest {
      */
     @Test
     public void testCBCEncryptDecrypt() {
-        cbc.initEncrypt(TEST_IV);
+        cbc.initEncrypt(new byte[] {0}, TEST_IV);
         
         byte[] data1 = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                    0x15, 0x16, 0x17, 0x18};
@@ -110,7 +110,7 @@ public class BlockModeCBCTest {
         assertArrayEquals(expc1, edat1);
         
         cbc.finish();
-        cbc.initDecrypt(TEST_IV);
+        cbc.initDecrypt(new byte[] {0}, TEST_IV);
         
         byte[] edat2 = cbc.process(Arrays.copyOf(expc1, expc1.length));
         assertArrayEquals(data1, edat2);
@@ -144,8 +144,8 @@ public class BlockModeCBCTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoInitIllegalState() {
-        cbc.initEncrypt(ZERO_IV);
-        cbc.initDecrypt(ZERO_IV);
+        cbc.initEncrypt(new byte[] {0}, ZERO_IV);
+        cbc.initDecrypt(new byte[] {0}, ZERO_IV);
     }
     
     /**
@@ -154,7 +154,7 @@ public class BlockModeCBCTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoFinishIllegalState() {
-        cbc.initEncrypt(ZERO_IV);
+        cbc.initEncrypt(new byte[] {0}, ZERO_IV);
         cbc.finish();
         cbc.finish();
     }
@@ -165,7 +165,7 @@ public class BlockModeCBCTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongBlockSizeIllegalArgument() {
-        cbc.initDecrypt(ZERO_IV);
+        cbc.initDecrypt(new byte[] {0}, ZERO_IV);
         cbc.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
     }
     
@@ -175,6 +175,7 @@ public class BlockModeCBCTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongIVSizeIllegalArgument() {
-        cbc.initDecrypt(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
+        cbc.initDecrypt(new byte[] {0}, 
+                new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
     }
 }

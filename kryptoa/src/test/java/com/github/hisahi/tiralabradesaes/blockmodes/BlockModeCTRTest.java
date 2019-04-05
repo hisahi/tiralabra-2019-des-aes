@@ -38,7 +38,7 @@ public class BlockModeCTRTest {
      */
     @Test
     public void testCTRZeroIVOneBlocks() {
-        ctr.initEncrypt(ZERO_NONCE);
+        ctr.initEncrypt(new byte[] {0}, ZERO_NONCE);
         
         byte[] data = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                   0x15, 0x16, 0x17, 0x18};
@@ -54,7 +54,7 @@ public class BlockModeCTRTest {
      */
     @Test
     public void testCTRNonZeroIVOneBlocks() {
-        ctr.initEncrypt(TEST_NONCE);
+        ctr.initEncrypt(new byte[] {0}, TEST_NONCE);
         
         byte[] data = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                   0x15, 0x16, 0x17, 0x18};
@@ -73,7 +73,7 @@ public class BlockModeCTRTest {
      */
     @Test
     public void testCTRNonZeroIVTwoBlocks() {
-        ctr.initEncrypt(TEST_NONCE);
+        ctr.initEncrypt(new byte[] {0}, TEST_NONCE);
         
         byte[] data1 = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                    0x15, 0x16, 0x17, 0x18};
@@ -98,7 +98,7 @@ public class BlockModeCTRTest {
      */
     @Test
     public void testCTREncryptDecrypt() {
-        ctr.initEncrypt(TEST_NONCE);
+        ctr.initEncrypt(new byte[] {0}, TEST_NONCE);
         
         byte[] data1 = new byte[] {0x11, 0x12, 0x13, 0x14, 
                                    0x15, 0x16, 0x17, 0x18};
@@ -108,7 +108,7 @@ public class BlockModeCTRTest {
         assertArrayEquals(expc1, edat1);
         
         ctr.finish();
-        ctr.initDecrypt(TEST_NONCE);
+        ctr.initDecrypt(new byte[] {0}, TEST_NONCE);
         
         byte[] edat2 = ctr.process(Arrays.copyOf(expc1, expc1.length));
         assertArrayEquals(data1, edat2);
@@ -142,8 +142,8 @@ public class BlockModeCTRTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoInitIllegalState() {
-        ctr.initEncrypt(ZERO_NONCE);
-        ctr.initDecrypt(ZERO_NONCE);
+        ctr.initEncrypt(new byte[] {0}, ZERO_NONCE);
+        ctr.initDecrypt(new byte[] {0}, ZERO_NONCE);
     }
     
     /**
@@ -152,7 +152,7 @@ public class BlockModeCTRTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoFinishIllegalState() {
-        ctr.initEncrypt(ZERO_NONCE);
+        ctr.initEncrypt(new byte[] {0}, ZERO_NONCE);
         ctr.finish();
         ctr.finish();
     }
@@ -163,7 +163,7 @@ public class BlockModeCTRTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongBlockSizeIllegalArgument() {
-        ctr.initDecrypt(ZERO_NONCE);
+        ctr.initDecrypt(new byte[] {0}, ZERO_NONCE);
         ctr.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
     }
     
@@ -173,6 +173,7 @@ public class BlockModeCTRTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongIVSizeIllegalArgument() {
-        ctr.initDecrypt(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
+        ctr.initDecrypt(new byte[] {0}, 
+                new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
     }
 }

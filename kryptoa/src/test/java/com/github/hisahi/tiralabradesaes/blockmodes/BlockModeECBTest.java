@@ -29,7 +29,7 @@ public class BlockModeECBTest {
      */
     @Test
     public void dataGoesThrough() {
-        ecb.initEncrypt(null);
+        ecb.initEncrypt(new byte[] {0}, null);
         byte[] data = new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18};
         byte[] edata = ecb.process(Arrays.copyOf(data, data.length));
         assertArrayEquals(data, edata);
@@ -60,8 +60,8 @@ public class BlockModeECBTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoInitIllegalState() {
-        ecb.initEncrypt(null);
-        ecb.initDecrypt(null);
+        ecb.initEncrypt(new byte[] {0}, null);
+        ecb.initDecrypt(new byte[] {0}, null);
     }
     
     /**
@@ -70,7 +70,7 @@ public class BlockModeECBTest {
      */
     @Test(expected = IllegalStateException.class)
     public void twoFinishIllegalState() {
-        ecb.initEncrypt(null);
+        ecb.initEncrypt(new byte[] {0}, null);
         ecb.finish();
         ecb.finish();
     }
@@ -81,7 +81,7 @@ public class BlockModeECBTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongBlockSizeIllegalArgument() {
-        ecb.initDecrypt(null);
+        ecb.initDecrypt(new byte[] {0}, null);
         ecb.process(new byte[] {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17});
     }
 }

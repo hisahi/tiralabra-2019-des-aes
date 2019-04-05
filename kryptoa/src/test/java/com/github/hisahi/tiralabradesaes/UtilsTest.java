@@ -144,6 +144,10 @@ public class UtilsTest {
                 Utils.convertBase64ToBytes("Zm9vYmE="));
         assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72 }, 
                 Utils.convertBase64ToBytes("Zm9vYmFy"));
+        assertEquals(null,  // invalid base64
+                Utils.convertBase64ToBytes("Zm9"));
+        assertEquals(null,  // invalid base64
+                Utils.convertBase64ToBytes("Z(9="));
     }
     
     /**
@@ -160,5 +164,15 @@ public class UtilsTest {
                 Utils.convertBytesToHex(new byte[] { 10, -68, -34, -7 }));
         assertEquals("ff0055aa", 
                 Utils.convertBytesToHex(new byte[] { -1, 0, 85, -86 }));
+    }
+    
+    /**
+     * Test that generating strong random bytes is possible. It's
+     * impossible to actually test whether they are reliable.
+     */
+    @Test
+    public void testStrongRandom() {
+        byte[] b = new byte[16];
+        Utils.generateStrongRandom(b);
     }
 }

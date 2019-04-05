@@ -46,15 +46,17 @@ public class BlockModeCBC implements IBlockMode {
     }
     
     @Override
-    public void initEncrypt(byte[] iv) {
+    public void initEncrypt(byte[] key, byte[] iv) {
         initBase(iv);
         encrypting = true;
+        ciph.initEncrypt(key);
     }
     
     @Override
-    public void initDecrypt(byte[] iv) {
+    public void initDecrypt(byte[] key, byte[] iv) {
         initBase(iv);
         encrypting = false;
+        ciph.initDecrypt(key);
     }
 
     @Override
@@ -101,6 +103,7 @@ public class BlockModeCBC implements IBlockMode {
         // destroy lastBlock & cb
         Utils.destroyArray(lastBlock);
         Utils.destroyArray(cb); 
+        ciph.finish();
     }
 
 }

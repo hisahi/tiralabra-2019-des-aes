@@ -27,10 +27,10 @@ public class HashSHA2_512 implements IHashFunction {
     /**
      * Temporary variables h0-h7 used in the SHA-2 computation process.
      */
+    private final long[] w = new long[80];
     protected long h0, h1, h2, h3, h4, h5, h6, h7;
     private long a, b, c, d, e, f, g, h, s0, s1, ch, maj, tmp1, tmp2;
     private int n;
-    private long[] w = new long[80];
     private long lengthInBits;
     private byte[] src;
     /**

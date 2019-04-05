@@ -36,13 +36,15 @@ public class BlockModeECB implements IBlockMode {
     }
     
     @Override
-    public void initEncrypt(byte[] iv) {
+    public void initEncrypt(byte[] key, byte[] iv) {
         initBase(iv);
+        ciph.initEncrypt(key);
     }
     
     @Override
-    public void initDecrypt(byte[] iv) {
+    public void initDecrypt(byte[] key, byte[] iv) {
         initBase(iv);
+        ciph.initDecrypt(key);
     }
 
     @Override
@@ -62,6 +64,7 @@ public class BlockModeECB implements IBlockMode {
             throw new IllegalStateException("already finished");
         }
         init = false;
+        ciph.finish();
     }
 
 }

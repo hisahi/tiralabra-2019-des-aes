@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public class HMACFunction {
     
-    private IHashFunction h;
+    private final IHashFunction h;
     private byte[] rkey;
     private byte[] opad;
     private byte[] ipad;
@@ -28,13 +28,22 @@ public class HMACFunction {
     }
     
     /**
-     * The length of the resulting HMAC in bytes.
+     * Returns the length of the resulting HMAC in bytes.
      * 
-     * @return The result of the HMAC in bytes; same as the length of the hash
-     *         of the underlying hash function.
+     * @return The length of the result of the HMAC in bytes; same as the 
+     *         length of the hash of the underlying hash function.
      */
     public int getHashLength() {
         return h.getHashLength();   
+    }
+    
+    /**
+     * Returns the block size of the underlying hash algorithm.
+     * 
+     * @return The block size in bytes.
+     */
+    public int getBlockSize() {
+        return h.getBlockSize();   
     }
     
     /**

@@ -2,7 +2,6 @@
 package com.github.hisahi.tiralabradesaes.ciphers; 
 
 import com.github.hisahi.tiralabradesaes.Utils;
-import java.util.Arrays;
 
 /**
  * Implements AES with three possible key sizes: 128 bits, 

@@ -32,18 +32,21 @@ avainta. Jos alustusvektori määritellään, sen on oltava 64-bittinen
 Algoritmin jälkeen määritellään lohkotilaksi joko `ECB`, `CBC` tai `CTR`.
 Kaksi viimeistä vaativat myös heti perään alustusvektorin heksamuodossa,
 jos avain annetaan myös heksamuodossa. Jos alustusvektorin kohdalle laitetaan 
-`-`, salausta tai purkua varten luodaan satunnainen alustusvektori. Tämä
+`-`, salausta varten luodaan satunnainen alustusvektori joka sijoitetaan
+salatun tiedon alkuun ja purkua varten se luetaan datan alusta. Tämä
 tehdään myös automaattisesti salasanaa käyttäessä, jolloin salatun
 tiedon alkuun sijoitetaan satunnaisesti luotu alustusvektori.
-Jos `-key`:lle annetaan tiedosto, sen oletetaan sisältävän myös
+Jos avaintila on `-kfile`, kyseisen tiedoston oletetaan sisältävän myös
 alustusvektori.
 
-Tämän jälkeen annetaan `-key`, jonka jälkeen annetaan joko avain heksa-
-muodossa, salasana (lainausmerkeissä) tai tiedostonimi. Jos tiedostonimi 
-annetaan, sen oletetaan sisältävän _aluksi sopivan kokoisen alustusvektorin_
-_ja sen jälkeen sopivan kokoisen avaimen_ (huomaa järjestys). Jos salasana 
-annetaan, satunnainen alustusvektori sisällytetään salatun tiedon alkuun
-ja luetaan sen alusta purettaessa.
+Tämän jälkeen annetaan avaintilana joko `-key`, `-pass` tai `-kfile`, jonka 
+jälkeen annetaan joko avain heksamuodossa (`-key`), salasana (`-pass`) 
+tai tiedostonimi (`-kfile`), jossa tapauksessa tiedoston oletetaan 
+sisältävän _aluksi sopivan kokoisen alustusvektorin ja sen jälkeen_
+_sopivan kokoisen avaimen_ (huomaa järjestys), eikä mitään muuta. Jos salasana 
+annetaan, lisätietoa sisällytetään salatun tiedon alkuun ja luetaan 
+sen alusta purettaessa. Lisätietoon kuuluu salasanasta avaimeen luomiseen
+käytetty hitausarvo, suola sekä satunnaisesti luotu alustusvektori.
 
 Tämän jälkeen tilasta riippuen annetaan syöte ja tuloste. `asc`-tilassa
 syötteeksi voi antaa salattavan tai purettavan merkkijonon, mutta jos sitä
@@ -52,7 +55,9 @@ tulee tarjota heksamuodossa ja `b64`-tilassa Base64-muodossa. `file`-tilassa
 tulee tarjota sekä syötetiedoston nimi että tulostetiedoston nimi.
 
 ## `-test`
-TODO
+Testitilan parametrit ovat aina salasana ja syötetiedosto. Testitilassa 
+käytetään jokaista algoritmia ja jokaista lohkotilaa. Tiedostoa itseään
+ei kuitenkaan tallenneta (mutta sellainen luodaan väliaikaisesti).
 
 # Esimerkkejä
 Kaikkien näiden alkuun kuuluu komennon merkkijono, eli esimerkiksi
@@ -61,11 +66,11 @@ Kaikkien näiden alkuun kuuluu komennon merkkijono, eli esimerkiksi
 * `-enc hex DES ECB -key 853F31351E51CD9C 0A0F2CB1BEFE1D00`
   * Salaa annetun heksamuotoisen syötteen `0A0F2CB1BEFE1D00` DES-algoritmilla
     käyttäen ECB-lohkotilaa ja avaimena `853F31351E51CD9C`.
-* `-dec asc AES CTR -key "testi"`
+* `-dec asc AES CTR -pass "testi"`
   * Purkaa standardisyötteestä saatavaa tietoa AES-algoritmilla CTR-
     lohkotilalla, käyttäen avaimena `testi`-salasanasta luotua avainta
     ja alustusvektorina tiedon alussa säilöttävää alustusvektoria.
-* `-enc file 3DES CBC -key file.key file.zip file.zip.tds`
+* `-enc file 3DES CBC -kfile file.key file.zip file.zip.tds`
   * Salaa tiedoston `file.zip` tiedostosta `file.key` löytyvällä
     avaimella ja alustusvektorilla tiedostoon `file.zip.tds`. Käytettävänä
     algoritmina on 3DES eli Triple-DES ja lohkotilana CBC.
@@ -74,4 +79,7 @@ Kaikkien näiden alkuun kuuluu komennon merkkijono, eli esimerkiksi
   * Salaa yhden 0-tavun AES-algoritmilla ja CBC-lohkotilalla, missä
     alustusvektori on `55555555555555555555555555555555` ja avain on
     `AA9DCA3BA4DE72155C652AE17CFA6926CFD12ADDBB2B212C` (192 bittiä).
-* `-test `... TODO
+* `-test salasana tiedosto.zip`
+  * Salaa tiedoston `tiedosto.zip` jokaisen salausalgoritmin ja lohkotilan
+    yhdistelmällä ja mittaa niiden salausajat ja muistin käytöt. Käyttää
+    salasanaa `salasana`, tosin tällä ei pitäisi olla mitään väliä.

@@ -28,4 +28,14 @@ public class KeyDerivPBKDF2Test {
                 Utils.convertHexToBytes("a009c1a485912c6ae630d3e744240b04"));
         assertEquals("17eb4014c8c461c300e9b61518b9a18b", Utils.convertBytesToHex(key));
     }
+    
+    /**
+     * Simple test for calibration.
+     */
+    @Test
+    public void testPBKDF2Calibration() {
+        kdf.setCost(1);
+        kdf.calibrateTime(100, 32);
+        assertTrue(kdf.getCost() > 1);
+    }
 }

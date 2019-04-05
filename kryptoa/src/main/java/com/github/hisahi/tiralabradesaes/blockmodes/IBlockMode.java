@@ -17,30 +17,32 @@ public interface IBlockMode {
     /**
      * Initializes the block cipher mode of operation for encrypting blocks.
      * Guaranteed to be called before either process() or finish().
-     * Calling again is invalid before finish() is called.
+     * Calling again is invalid before finish() is called. This will also
+     * initialize the underlying block cipher with the given key.
      * 
+     * @param key The key to initialize the cipher with. May not be null.
      * @param iv The IV or initialization vector. May only be null when the
      * block cipher mode of operation does not accept IVs.
      */
-    public void initEncrypt(byte[] iv);
+    public void initEncrypt(byte[] key, byte[] iv);
     
     /**
      * Initializes the block cipher mode of operation for decrypting blocks.
      * Guaranteed to be called before either process() or finish().
-     * Calling again is invalid before finish() is called.
+     * Calling again is invalid before finish() is called. This will also
+     * initialize the underlying block cipher with the given key.
      * 
+     * @param key The key to initialize the cipher with. May not be null.
      * @param iv The IV or initialization vector. May only be null when the
      * block cipher mode of operation does not accept IVs.
      */
-    public void initDecrypt(byte[] iv);
+    public void initDecrypt(byte[] key, byte[] iv);
     
     /**
      * Processes a single block of plaintext. The intended workflow is:<ol>
-     * <li>init block cipher with key</li>
-     * <li>init block mode with IV and cipher</li>
+     * <li>init block mode with key and IV; initializes block cipher</li>
      * <li>call block mode process to encrypt or decrypt a plaintext block</li>
-     * <li>finish block cipher</li>
-     * <li>finish block mode</li>
+     * <li>finish block mode, which will also finish the cipher</li>
      * </ol>
      *  
      * Note that the given byte array might be modified by the implementation.

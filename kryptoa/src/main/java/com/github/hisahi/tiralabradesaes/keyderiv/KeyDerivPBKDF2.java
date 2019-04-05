@@ -10,8 +10,8 @@ import java.util.Arrays;
  */
 public class KeyDerivPBKDF2 implements IKeyDerivation {
     
-    private HMACFunction hmac;
-    private int cost;
+    private final HMACFunction hmac;
+    private long cost;
     
     /**
      * Creates a KeyDerivPBKDF2 instance from the given HMAC function 
@@ -22,29 +22,65 @@ public class KeyDerivPBKDF2 implements IKeyDerivation {
      * @param c The cost value; higher values take longer but have better
      *          security against brute-force attacks.
      */
-    public KeyDerivPBKDF2(HMACFunction prf, int c) {
+    public KeyDerivPBKDF2(HMACFunction prf, long c) {
         hmac = prf;
         setCost(c);
     }
     
-    /**
-     * Sets the cost used by PBKDF2.
-     * 
-     * @param c The cost value; higher values take longer but have better
-     *          security against brute-force attacks.
-     */
-    public void setCost(int c) {
+    @Override
+    public long getCost() {
+        return cost;
+    }
+    
+    @Override
+    public void setCost(long c) {
         if (c <= 0) {
-            throw new IllegalArgumentException("cost must be at least 1");
+            throw new IllegalArgumentException("cost must be positive");
         }
         cost = c;
+    }
+    
+    @Override
+    public void calibrateTime(int ms, int keySize) {
+        if (ms <= 0 || keySize <= 0) {
+            throw new IllegalArgumentException("ms, keySize must be positive");
+        }
+        
+        long startValue = System.currentTimeMillis(), 
+                endValue = System.currentTimeMillis();
+        byte[] key = new byte[keySize];
+        byte[] salt = new byte[hmac.getBlockSize()];
+                
+        cost = 0;
+        
+        while ((endValue - startValue) < (ms + 1) / 2) {
+            if (cost < 2) {
+                cost += 1;
+            } else {
+                cost = 3 * cost / 2;
+            }
+            
+            startValue = System.currentTimeMillis();
+            deriveKey(key, key, salt);
+            endValue = System.currentTimeMillis();
+        }
+        
+        long trialTime = 0;
+        
+        for (int i = 0; i < 3; ++i) {
+            startValue = System.currentTimeMillis();
+            deriveKey(key, key, salt);
+            trialTime += System.currentTimeMillis() - startValue;
+        }
+        
+        cost = (long) cost * ms * 3 / trialTime;
     }
 
     @Override
     public void deriveKey(byte[] key, byte[] password, byte[] salt) {
         byte[] fullSalt = new byte[salt.length + 4];
         byte[] u;
-        byte[] v = new byte[fullSalt.length];
+        byte[] v = new byte[Math.max(fullSalt.length, hmac.getHashLength())];
         System.arraycopy(salt, 0, fullSalt, 0, salt.length);
         
         for (int i = 0; i < key.length; i += hmac.getHashLength()) {
