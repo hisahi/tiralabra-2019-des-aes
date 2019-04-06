@@ -30,7 +30,7 @@ Tämä salain toimii yksinkertaisesti kolminkertaisella DES:llä.
 Esimerkiksi yhden lohkon salauksessa lohko salataan DES:llä ensimmäisellä
 avaimella, puretaan toisella ja salataan kolmannella. Kolmea avainta
 käytetään kahden sijasta, koska kahden avaimen käyttäminen ei lisäisi
-kryptografista turvallisuutta juuri lainkaan riippuen keskikohtahyökkäyksestä
+kryptografista turvallisuutta juuri lainkaan johtuen keskikohtahyökkäyksestä
 (_meet-in-the-middle attack_), jossa `C = ENC2(ENC1(P))` muuttuu muotoon 
 `DEC2(C) = ENC1(P)` ja vaatisi `2^K * 2^K` avainparin tarkistuksen sijasta vain
 `2^(K+1)` avainparin tarkistusta. Triple-DES pysyi käytössä pidempään kuin
@@ -44,7 +44,9 @@ AES:n toimintaperiaate on pinnan alta hyvinkin erilainen. Se käyttää 128 biti
 eli 16 tavun lohkoja, jotka esitetään 4x4 matriisina. Kierrokset koostuvat
 avaimeen pohjautuvan avainluettelon ala-avainten lisäämisestä taulukkoon,
 tavujen korvaamisesta AES:n omalla S-boxilla, rivien siirtämisestä ja
-sarakepohjaisesta lineaarisesta operaatiosta Galoisin kentän avulla.
+sarakepohjaisesta lineaarisesta operaatiosta Galois'n kunnan avulla.
+AES on yhä nykyäänkin käytetty salausalgoritmi, jota pidetään turvallisena,
+kunhan sitä käytetään oikein.
 
 Samoin kuin DES, AES:n tilavaativuus on vakio, josta avainluettelo vie
 suurimman osan muistia. Aikavaativuus on myös O(n), sillä mikään AES:n

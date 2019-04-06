@@ -1,7 +1,7 @@
 # Tehdyt asiat
 Lisäsin -test-tuen, salasanatuen, IV-tuen (joten nyt käyttöohjeessa mainitut
 asiat oikeasti toimivat) sekä kirjoitin testausdokumenttiin tekemieni
-testien tuloksia (ei aivan vielä).
+testien tuloksia.
 
 Toteutuksia varten olen toteuttanut lisäksi MT19937-
 satunnaislukugeneraattorin (jotta pääsisi Randomista eroon) sekä ChaCha20-
@@ -24,4 +24,4 @@ selvittämisessä kesti (ei pitänyt kasvattaa laskuria lopputuloksessa vaan
 avainlohkossa, jotka olivat tosiaan erikseen).
 
 # Aika
-Käytetty aika noin 8 tuntia.
+Käytetty aika noin 12 tuntia.
