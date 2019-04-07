@@ -76,9 +76,8 @@ grep "real"; done`, ja keskiarvot laskettiin tuloksista itse.
 # Johtopäätökset
 * AES on huomattavasti nopeampi kuin DES - lähes kolminkertainen salausnopeus
 * 3DES on hieman nopeampi kuin 3 kertaa DESin vaatima aika - syytä en tiedä
-* Salaus ja purku vaativat suunnilleen yhtä paljon aikaa: DES:n osalta
-  varsinaista eroa joka ei johtuisi mittauksen virheistä ei luultavasti ole, 
-  vai onko?
+* Salaus ja purku vaativat suunnilleen yhtä paljon aikaa, erot ovat pieniä
+  ja mahtunevat virhemarginaaliin
 * Lohkotilojen suorituskyvyissä ei ole juurikaan eroja; CBC on hieman
   ECB:tä hitaampi, mutta ero on hyvin vähäinen, ja CTR on mahdollisesti
   näiden kahden välissä
