@@ -87,9 +87,9 @@ lopussa olisi 8 tavun lohko tavuja, joiden jokaisen arvo on 8.
 # Mittauksia
 Tarkempaa tietoa löytyy testausdokumentista.
 
-Nopeassa testauksessa DES on noin 1/20 OpenSSL:n suorituskyvystä ja AES
-noin 1/8. Kaikkia algoritmeja on testattu OpenSSL:ää sekä muita salaus-
-ohjelmia vastaan, ja salatut syötteet ovat yhteensopivia. 
+Nopeassa testauksessa DES on noin 1/21 OpenSSL:n suorituskyvystä ja AES
+noin 1/30. Kaikkia algoritmeja on testattu OpenSSL:ää sekä muita
+salausohjelmia vastaan, ja salatut syötteet ovat yhteensopivia. 
 
 # Ohjelman rakenne
 Ohjelman rakenteesta käytetään laajasti hyödyksi olio-ohjelmoinnin

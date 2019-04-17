@@ -1,7 +1,8 @@
 # Ohjelman käyttöohje
 
 ## Sovelluksen sijainti
-TODO
+Valmiin JAR-tiedoston löytää [julkaisuista](
+https://github.com/hisahi/tiralabra-2019-des-aes/releases).
 
 ## Sovelluksen käynnistys
 Sovelluksen voi käynnistää komennolla `java -jar kryptoa.jar`. Ohjelma
