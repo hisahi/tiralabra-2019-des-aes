@@ -49,7 +49,7 @@ public class PaddingRemoverWriter {
             r = buffer.length;
             stream.write(buffer);
         }
-        System.arraycopy(block, 0, buffer, 0, buffer.length);
+        Utils.arraycopy(block, 0, buffer, 0, buffer.length);
         firstBlock = false;
         return r;
     }

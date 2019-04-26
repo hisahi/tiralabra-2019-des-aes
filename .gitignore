@@ -29,3 +29,6 @@ hs_err_pid*
 /kryptoa/.nb-gradle-properties
 
 /temp/
+
+# include Gradle wrapper
+!/kryptoa/gradle/wrapper/gradle-wrapper.jar

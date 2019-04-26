@@ -78,8 +78,8 @@ public final class Utils {
         byte[] midKey = new byte[21];
         
         // K1 <- K1, K2 <- K2, K3 <- K1
-        System.arraycopy(rawKey, 0, midKey, 0, 14);
-        System.arraycopy(rawKey, 0, midKey, 14, 7);
+        arraycopy(rawKey, 0, midKey, 0, 14);
+        arraycopy(rawKey, 0, midKey, 14, 7);
         
         byte[] resKey = prepare3DESKey(midKey);
         destroyArray(midKey);
@@ -139,8 +139,8 @@ public final class Utils {
         byte[] resKey = new byte[24];
         
         // K1 <- K1, K2 <- K2, K3 <- K1
-        System.arraycopy(rawKey, 0, resKey, 0, 16);
-        System.arraycopy(rawKey, 0, resKey, 16, 8);
+        arraycopy(rawKey, 0, resKey, 0, 16);
+        arraycopy(rawKey, 0, resKey, 16, 8);
         
         return resKey;
     }
@@ -312,12 +312,71 @@ public final class Utils {
         generateWeakRandom(non);
         
         cha.init(key, non);
-        Arrays.fill(res, (byte) 0);
+        arrayfill(res, (byte) 0);
         
         byte[] rnd = cha.process(res);
         cha.finish();
         
-        System.arraycopy(rnd, 0, res, 0, res.length);
+        arraycopy(rnd, 0, res, 0, res.length);
+    }
+    
+    /**
+     * Copies array contents from a source array into a destination
+     * array. Undefined behavior if the two arrays are the same and the
+     * source and destination regions overlap.
+     * 
+     * @param src The source array to copy from.
+     * @param srcPos The position to start copying from.
+     * @param dest The destination array to copy to.
+     * @param destPos The position to start copying to.
+     * @param length The number of elements to copy.
+     */
+    public static void arraycopy(byte[] src, int srcPos,
+                                 byte[] dest, int destPos,
+                                 int length) {
+        // System.arraycopy(src, srcPos, dest, destPos, length);
+        for (int i = 0; i < length; ++i) {
+            dest[destPos + i] = src[srcPos + i];
+        }
+    }
+    
+    /**
+     * Fills the entirety of the given array with the specific value.
+     * 
+     * @param a The array to fill.
+     * @param val The value to fill with.
+     */
+    public static void arrayfill(byte[] a, byte val) {
+        // Arrays.fill(a, val);
+        for (int i = 0; i < a.length; ++i) {
+            a[i] = val;
+        }
+    }
+    
+    /**
+     * Fills the entirety of the given array with the specific value.
+     * 
+     * @param a The array to fill.
+     * @param val The value to fill with.
+     */
+    public static void arrayfill(int[] a, int val) {
+        // Arrays.fill(a, val);
+        for (int i = 0; i < a.length; ++i) {
+            a[i] = val;
+        }
+    }
+    
+    /**
+     * Fills the entirety of the given array with the specific value.
+     * 
+     * @param a The array to fill.
+     * @param val The value to fill with.
+     */
+    public static void arrayfill(long[] a, long val) {
+        // Arrays.fill(a, val);
+        for (int i = 0; i < a.length; ++i) {
+            a[i] = val;
+        }
     }
     
     /**

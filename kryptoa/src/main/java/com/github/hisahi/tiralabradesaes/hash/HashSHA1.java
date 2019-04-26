@@ -1,6 +1,7 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+import com.github.hisahi.tiralabradesaes.Utils;
 import java.util.Arrays;
 
 /**
@@ -31,7 +32,7 @@ public class HashSHA1 implements IHashFunction {
         src = new byte[n];
         
         // data
-        System.arraycopy(data, 0, src, 0, data.length);
+        Utils.arraycopy(data, 0, src, 0, data.length);
         // padding (0's added automatically)
         src[data.length] = (byte) 0x80;
         // length (in bits!)
@@ -103,9 +104,9 @@ public class HashSHA1 implements IHashFunction {
     public void reset() {
         h0 = h1 = h2 = h3 = h4 = tmp = a = b = c = d = e = f = k = n = 0;
         lengthInBits = 0L;
-        Arrays.fill(w, 0);
-        Arrays.fill(src, (byte) 0);
-        Arrays.fill(resHash, (byte) 0);
+        Utils.arrayfill(w, 0);
+        Utils.arrayfill(src, (byte) 0);
+        Utils.arrayfill(resHash, (byte) 0);
     }
 
 }

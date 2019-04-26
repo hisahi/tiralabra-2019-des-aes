@@ -164,14 +164,14 @@ public class CipherDES implements IBlockCipher {
             throw new IllegalStateException("already finished");
         }
         Utils.destroyArray(tmpblk);
-        Arrays.fill(keysched, (long) -1);
+        Utils.arrayfill(keysched, (long) -1);
         vas = oik = E = j = 0;
         init = false;
     }
 
     private void doPerm(byte[] block, int[] perm) {
-        System.arraycopy(block, 0, tmpblk, 0, 8);
-        Arrays.fill(block, (byte) 0);
+        Utils.arraycopy(block, 0, tmpblk, 0, 8);
+        Utils.arrayfill(block, (byte) 0);
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
@@ -181,8 +181,8 @@ public class CipherDES implements IBlockCipher {
     }
 
     private void doPermRev(byte[] block, int[] perm) {
-        System.arraycopy(block, 0, tmpblk, 0, 8);
-        Arrays.fill(block, (byte) 0);
+        Utils.arraycopy(block, 0, tmpblk, 0, 8);
+        Utils.arrayfill(block, (byte) 0);
         
         for (int i = 0; i < 64; ++i) {
             j = perm[i];

@@ -42,7 +42,7 @@ public class BlockModeCBC implements IBlockMode {
         }
         init = true;
         // init lastBlock
-        System.arraycopy(iv, 0, lastBlock, 0, lastBlock.length);
+        Utils.arraycopy(iv, 0, lastBlock, 0, lastBlock.length);
     }
     
     @Override
@@ -78,7 +78,7 @@ public class BlockModeCBC implements IBlockMode {
             cb = ciph.process(data);
             
             // new lastBlock init
-            System.arraycopy(cb, 0, lastBlock, 0, lastBlock.length);
+            Utils.arraycopy(cb, 0, lastBlock, 0, lastBlock.length);
         } else {
             // decrypt
             cb = ciph.process(Arrays.copyOf(data, data.length));
@@ -89,7 +89,7 @@ public class BlockModeCBC implements IBlockMode {
             }
             
             // new lastBlock init
-            System.arraycopy(data, 0, lastBlock, 0, lastBlock.length);
+            Utils.arraycopy(data, 0, lastBlock, 0, lastBlock.length);
         }
         return cb;
     }

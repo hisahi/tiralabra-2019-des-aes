@@ -1,6 +1,7 @@
 
 package com.github.hisahi.tiralabradesaes.keyderiv; 
 
+import com.github.hisahi.tiralabradesaes.Utils;
 import java.util.Arrays;
 
 /**
@@ -81,7 +82,7 @@ public class KeyDerivPBKDF2 implements IKeyDerivation {
         byte[] fullSalt = new byte[salt.length + 4];
         byte[] u;
         byte[] v = new byte[Math.max(fullSalt.length, hmac.getHashLength())];
-        System.arraycopy(salt, 0, fullSalt, 0, salt.length);
+        Utils.arraycopy(salt, 0, fullSalt, 0, salt.length);
         
         for (int i = 0; i < key.length; i += hmac.getHashLength()) {
             // increment fullSalt
@@ -103,7 +104,7 @@ public class KeyDerivPBKDF2 implements IKeyDerivation {
             }
             
             // copy HMAC to key, truncate if necessary
-            System.arraycopy(v, 0, key, i, Math.min(i + hmac.getHashLength(), 
+            Utils.arraycopy(v, 0, key, i, Math.min(i + hmac.getHashLength(), 
                     key.length) - i);
         }
         hmac.reset();

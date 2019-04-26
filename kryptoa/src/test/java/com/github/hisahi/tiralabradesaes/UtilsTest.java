@@ -120,6 +120,8 @@ public class UtilsTest {
         assertArrayEquals(null, 
                 Utils.convertHexToBytes("f"));
         assertArrayEquals(null, 
+                Utils.convertHexToBytes("h0"));
+        assertArrayEquals(null, 
                 Utils.convertHexToBytes("ggg"));
     }
     
@@ -144,10 +146,12 @@ public class UtilsTest {
                 Utils.convertBase64ToBytes("Zm9vYmE="));
         assertArrayEquals(new byte[] { 0x66, 0x6f, 0x6f, 0x62, 0x61, 0x72 }, 
                 Utils.convertBase64ToBytes("Zm9vYmFy"));
-        assertEquals(null,  // invalid base64
+        assertArrayEquals(null,  // invalid base64
                 Utils.convertBase64ToBytes("Zm9"));
-        assertEquals(null,  // invalid base64
+        assertArrayEquals(null,  // invalid base64
                 Utils.convertBase64ToBytes("Z(9="));
+        assertArrayEquals(null,  // invalid base64
+                Utils.convertBase64ToBytes("===="));
     }
     
     /**

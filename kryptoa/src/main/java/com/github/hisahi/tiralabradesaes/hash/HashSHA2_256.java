@@ -1,6 +1,8 @@
 
 package com.github.hisahi.tiralabradesaes.hash; 
 
+import com.github.hisahi.tiralabradesaes.Utils;
+
 /**
  * Implements SHA-256, the version of SHA-2 that creates 256-bit hashes.
  */
@@ -73,7 +75,7 @@ public class HashSHA2_256 implements IHashFunction {
         src = new byte[n];
         
         // data
-        System.arraycopy(data, 0, src, 0, data.length);
+        Utils.arraycopy(data, 0, src, 0, data.length);
         // padding (0's added automatically)
         src[data.length] = (byte) 0x80;
         // length (in bits!)

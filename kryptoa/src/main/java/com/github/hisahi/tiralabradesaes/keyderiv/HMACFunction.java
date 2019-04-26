@@ -1,6 +1,7 @@
 
 package com.github.hisahi.tiralabradesaes.keyderiv; 
 
+import com.github.hisahi.tiralabradesaes.Utils;
 import com.github.hisahi.tiralabradesaes.hash.IHashFunction;
 import java.util.Arrays;
 
@@ -82,9 +83,9 @@ public class HMACFunction {
             ipad[i] = (byte) (rkey[i] ^ 0x36);
         }
         
-        System.arraycopy(message, 0, ipad, rkey.length, message.length);
+        Utils.arraycopy(message, 0, ipad, rkey.length, message.length);
         hash = h.computeHash(ipad);
-        System.arraycopy(hash, 0, opad, rkey.length, hash.length);
+        Utils.arraycopy(hash, 0, opad, rkey.length, hash.length);
         return h.computeHash(opad);
     }
     
@@ -95,9 +96,9 @@ public class HMACFunction {
      */
     public void reset() {
         h.reset();
-        Arrays.fill(rkey, (byte) 0);
-        Arrays.fill(opad, (byte) 0);
-        Arrays.fill(ipad, (byte) 0);
+        Utils.arrayfill(rkey, (byte) 0);
+        Utils.arrayfill(opad, (byte) 0);
+        Utils.arrayfill(ipad, (byte) 0);
     }
     
 }

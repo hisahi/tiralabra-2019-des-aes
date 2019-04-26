@@ -48,10 +48,10 @@ public class BlockModeCTR implements IBlockMode {
         
         init = true;
         // init IV
-        System.arraycopy(iv, 0, ctriv, 0, iv.length);
+        Utils.arraycopy(iv, 0, ctriv, 0, iv.length);
         // init counter, tempbuf
-        Arrays.fill(counter, (byte) 0);
-        Arrays.fill(tempbuf, (byte) 0);
+        Utils.arrayfill(counter, (byte) 0);
+        Utils.arrayfill(tempbuf, (byte) 0);
     }
     
     @Override
@@ -101,9 +101,9 @@ public class BlockModeCTR implements IBlockMode {
         init = false;
         // destroy IV, counter, tempbuf
         Utils.destroyArray(ctriv);
-        Arrays.fill(counter, (byte) 0);
-        Arrays.fill(tempbuf, (byte) 0);
-        Arrays.fill(cb, (byte) 0);
+        Utils.arrayfill(counter, (byte) 0);
+        Utils.arrayfill(tempbuf, (byte) 0);
+        Utils.arrayfill(cb, (byte) 0);
         ciph.finish();
     }
 
