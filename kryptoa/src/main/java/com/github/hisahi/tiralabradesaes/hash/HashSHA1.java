@@ -79,7 +79,11 @@ public class HashSHA1 implements IHashFunction {
                 }
                 
                 tmp = ((a << 5) | (a >>> 27)) + f + e + k + w[j];
-                e = d; d = c; c = ((b << 30) | (b >>> 2)); b = a; a = tmp;
+                e = d; 
+                d = c; 
+                c = ((b << 30) | (b >>> 2)); 
+                b = a; 
+                a = tmp;
             }
              
             // add a, b, c, d, e to h0, h1, h2, h3, h4

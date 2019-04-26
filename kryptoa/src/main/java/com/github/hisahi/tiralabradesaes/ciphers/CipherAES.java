@@ -99,23 +99,29 @@ public class CipherAES implements IBlockCipher {
                 keyOut[i & 3][i >> 2] = k32[i];
             } else if ((i % kN) == 0) {
                 t = keyOut[(i - 1) & 3][(i - 1) >> 2]; 
+                
                 // AES RotWord
                 t = (t << 8) | (t >>> 24);
+                
                 // AES SubWord
                 t =   ((AES_S[(t >>> 24) & 0xFF]) & 0xFF) << 24
                     | ((AES_S[(t >>> 16) & 0xFF]) & 0xFF) << 16
                     | ((AES_S[(t >>>  8) & 0xFF]) & 0xFF) <<  8
                     | ((AES_S[(t       ) & 0xFF]) & 0xFF);
+                
                 t ^= AES_RCON[(i / kN) - 1];
+                
                 keyOut[i & 3][i >> 2] = t ^
                                     keyOut[(i - kN) & 3][(i - kN) >> 2];
             } else if (kN > 6 & (i % kN) == 4) {
                 t = keyOut[(i - 1) & 3][(i - 1) >> 2]; 
+                
                 // AES SubWord
                 t =   ((AES_S[(t >>> 24) & 0xFF]) & 0xFF) << 24
                     | ((AES_S[(t >>> 16) & 0xFF]) & 0xFF) << 16
                     | ((AES_S[(t >>>  8) & 0xFF]) & 0xFF) <<  8
                     | ((AES_S[(t       ) & 0xFF]) & 0xFF);
+                
                 keyOut[i & 3][i >> 2] = t ^ 
                                     keyOut[(i - kN) & 3][(i - kN) >> 2];
             } else {
@@ -124,7 +130,7 @@ public class CipherAES implements IBlockCipher {
             }
         }
         
-        // transpose the keys
+        // transpose the keys (endianness is a bit of a pain to work out)
         for (int i = 0; i <= rounds; ++i) {
             keyTranspose(i);
         }
@@ -156,6 +162,7 @@ public class CipherAES implements IBlockCipher {
     }
     
     private void doSubBytes() {
+        // pass t0-t3 byte-wise through the S-box
         t0 =   (AES_S[(t0 >>> 24) & 0xFF]) << 24
              | (AES_S[(t0 >>> 16) & 0xFF]) << 16
              | (AES_S[(t0 >>>  8) & 0xFF]) <<  8
@@ -175,6 +182,7 @@ public class CipherAES implements IBlockCipher {
     }
     
     private void doInvSubBytes() {
+        // pass t0-t3 byte-wise through the inverse S-box
         t0 =   (AES_IS[(t0 >>> 24) & 0xFF]) << 24
              | (AES_IS[(t0 >>> 16) & 0xFF]) << 16
              | (AES_IS[(t0 >>>  8) & 0xFF]) <<  8
@@ -227,6 +235,10 @@ public class CipherAES implements IBlockCipher {
         // aN <- tN
         a0 = t0; a1 = t1; a2 = t2; a3 = t3;
         
+        // t0 <-  2*a0 +  3*a1 +    a2 +    a3
+        // t1 <-    a0 +  2*a1 +  3*a2 +    a3
+        // t2 <-    a0 +    a1 +  2*a2 +  3*a3
+        // t3 <-  3*a0 +    a1 +    a2 +  2*a3
         t0 = gmul(GM_2, a0) ^ gmul(GM_3, a1) ^            a2  ^            a3 ;
         t1 =            a0  ^ gmul(GM_2, a1) ^ gmul(GM_3, a2) ^            a3 ;
         t2 =            a0  ^            a1  ^ gmul(GM_2, a2) ^ gmul(GM_3, a3);
@@ -241,6 +253,10 @@ public class CipherAES implements IBlockCipher {
         // aN <- tN
         a0 = t0; a1 = t1; a2 = t2; a3 = t3;
         
+        // t0 <- 14*a0 + 11*a1 + 13*a2 +  9*a3
+        // t1 <-  9*a0 + 14*a1 + 11*a2 + 13*a3
+        // t2 <- 13*a0 +  9*a1 + 14*a2 + 11*a3
+        // t3 <- 11*a0 + 13*a1 +  9*a2 + 14*a3
         t0 = gmul(GM14, a0) ^ gmul(GM11, a1) ^ gmul(GM13, a2) ^ gmul(GM_9, a3);
         t1 = gmul(GM_9, a0) ^ gmul(GM14, a1) ^ gmul(GM11, a2) ^ gmul(GM13, a3);
         t2 = gmul(GM13, a0) ^ gmul(GM_9, a1) ^ gmul(GM14, a2) ^ gmul(GM11, a3);
@@ -248,6 +264,8 @@ public class CipherAES implements IBlockCipher {
     }
     
     private int gmul(int[] table, int val) {
+        // using LUTs is faster than actually computing
+        // pass val byte-wise through table
         return (table[((val >>> 24) & 0xFF)] << 24)
              | (table[((val >>> 16) & 0xFF)] << 16)
              | (table[((val >>>  8) & 0xFF)] <<  8)
@@ -277,12 +295,15 @@ public class CipherAES implements IBlockCipher {
             for (int i = 0; i < rounds - 1; ++i) {
                 // AddRoundKey
                 t0 ^= key0[i]; t1 ^= key1[i]; t2 ^= key2[i]; t3 ^= key3[i];
+                
                 // SubBytes
                 doSubBytes();
+                
                 // ShiftRows
                 t1 = (t1 <<  8) | (t1 >>> 24);
                 t2 = (t2 << 16) | (t2 >>> 16);
                 t3 = (t3 << 24) | (t3 >>>  8);
+                
                 // MixColumns
                 doMixColumns();
             }
@@ -290,8 +311,10 @@ public class CipherAES implements IBlockCipher {
             // pre-final AddRoundKey
             t0 ^= key0[rounds - 1]; t1 ^= key1[rounds - 1]; 
             t2 ^= key2[rounds - 1]; t3 ^= key3[rounds - 1];
+            
             // SubBytes
             doSubBytes();
+            
             // ShiftRows
             t1 = (t1 <<  8) | (t1 >>> 24);
             t2 = (t2 << 16) | (t2 >>> 16);
@@ -300,7 +323,9 @@ public class CipherAES implements IBlockCipher {
             // final AddRoundKey
             t0 ^= key0[rounds]; t1 ^= key1[rounds]; 
             t2 ^= key2[rounds]; t3 ^= key3[rounds];
+            
         } else {
+            
             // AddRoundKey initial
             t0 ^= key0[rounds]; t1 ^= key1[rounds]; 
             t2 ^= key2[rounds]; t3 ^= key3[rounds];
@@ -310,11 +335,14 @@ public class CipherAES implements IBlockCipher {
                 t1 = (t1 << 24) | (t1 >>>  8);
                 t2 = (t2 << 16) | (t2 >>> 16);
                 t3 = (t3 <<  8) | (t3 >>> 24);
+                
                 // inverse SubBytes
                 doInvSubBytes();
+                
                 // AddRoundKey
                 t0 ^= key0[i]; t1 ^= key1[i]; 
                 t2 ^= key2[i]; t3 ^= key3[i];
+                
                 // inverse MixColumns
                 doInvMixColumns();
             }
@@ -323,6 +351,7 @@ public class CipherAES implements IBlockCipher {
             t1 = (t1 << 24) | (t1 >>>  8);
             t2 = (t2 << 16) | (t2 >>> 16);
             t3 = (t3 <<  8) | (t3 >>> 24);
+            
             // inverse SubBytes
             doInvSubBytes();
         

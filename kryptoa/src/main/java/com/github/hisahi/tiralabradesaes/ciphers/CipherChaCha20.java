@@ -34,12 +34,16 @@ public class CipherChaCha20 implements IStreamCipher {
 
         state = new int[16];
         tmp = new int[16];
+        
+        // ChaCha20 initial state constants
+        // spells out "expand 32-byte k"
         state[0] = 0x61707865;
         state[1] = 0x3320646e;
         state[2] = 0x79622d32;
         state[3] = 0x6b206574;
         cycle = 64;
         
+        // extract key to state
         for (int i = 4; i < 12; ++i) {
             state[i] = ((key[j + 3] & 0xFF) << 24) 
                      | ((key[j + 2] & 0xFF) << 16) 
@@ -48,6 +52,7 @@ public class CipherChaCha20 implements IStreamCipher {
             j += 4;
         }
         
+        // extract nonce to state
         // this is weird because of endianness switch
         state[14] = ((nonce[3] & 0xFF) << 24) | ((nonce[2] & 0xFF) << 16) 
                   | ((nonce[1] & 0xFF) <<  8) | ((nonce[0] & 0xFF)      );
@@ -58,21 +63,24 @@ public class CipherChaCha20 implements IStreamCipher {
     }
     
     private void quarterRound(int a, int b, int c, int d) {
+        // ChaCha20 quarter-round
         tmp[a] += tmp[b]; tmp[d] ^= tmp[a];
-        tmp[d] = (tmp[d] <<  16) | (tmp[d] >>> 16);
+        tmp[d] = (tmp[d] <<  16) | (tmp[d] >>> 16); // ROTL 16
         tmp[c] += tmp[d]; tmp[b] ^= tmp[c];
-        tmp[b] = (tmp[b] <<  12) | (tmp[b] >>> 20);
+        tmp[b] = (tmp[b] <<  12) | (tmp[b] >>> 20); // ROTL 12
         tmp[a] += tmp[b]; tmp[d] ^= tmp[a];
-        tmp[d] = (tmp[d] <<   8) | (tmp[d] >>> 24);
+        tmp[d] = (tmp[d] <<   8) | (tmp[d] >>> 24); // ROTL  8
         tmp[c] += tmp[d]; tmp[b] ^= tmp[c];
-        tmp[b] = (tmp[b] <<   7) | (tmp[b] >>> 25);
+        tmp[b] = (tmp[b] <<   7) | (tmp[b] >>> 25); // ROTL  7
     }
     
     private void fullBlock() {
+        // copy state to tmp
         for (int i = 0; i < 16; ++i) {
             tmp[i] = state[i];
         }
         
+        // quarter-rounds on tmp
         for (int i = 0; i < 10; ++i) {
             // Odd
             quarterRound( 0,  4,  8, 12);
@@ -86,6 +94,7 @@ public class CipherChaCha20 implements IStreamCipher {
             quarterRound( 3,  4,  9, 14);
         }
         
+        // add tmp to state
         for (int i = 0; i < 16; ++i) {
             tmp[i] += state[i];
         }
@@ -109,6 +118,7 @@ public class CipherChaCha20 implements IStreamCipher {
                 cycle = 0;
             }
             
+            // XOR block contents with tmp state (16 int -> 64 byte)
             block[i] ^= 0xFF & (tmp[cycle >>> 2] >>> ((cycle & 3) << 3));
             ++cycle;
         }

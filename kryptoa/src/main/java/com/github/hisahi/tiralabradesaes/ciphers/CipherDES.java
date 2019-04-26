@@ -132,6 +132,7 @@ public class CipherDES implements IBlockCipher {
             | (((long) key[7] & 0xFF));
         
         for (int i = 1; i < 8; ++i) {
+            // nice tricks
             tmp ^= (tmp << i);
         }
         
@@ -140,12 +141,13 @@ public class CipherDES implements IBlockCipher {
         
     private long extractPC2Bits(long key, int a, int b, int c, 
                                           int d, int e, int f) {
-        return   ((key >> a) & 1L) << 5
-               | ((key >> b) & 1L) << 4
-               | ((key >> c) & 1L) << 3
-               | ((key >> d) & 1L) << 2
-               | ((key >> e) & 1L) << 1
-               | ((key >> f) & 1L);
+        // create 6-bit number from bits in the key
+        return   ((key >>> a) & 1L) << 5
+               | ((key >>> b) & 1L) << 4
+               | ((key >>> c) & 1L) << 3
+               | ((key >>> d) & 1L) << 2
+               | ((key >>> e) & 1L) << 1
+               | ((key >>> f) & 1L);
     }
 
     @Override
@@ -173,8 +175,10 @@ public class CipherDES implements IBlockCipher {
         Utils.arraycopy(block, 0, tmpblk, 0, 8);
         Utils.arrayfill(block, (byte) 0);
         
+        // permute block with given permutation
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
+            // result created one bit at a time
             block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (j & 7)) & 1L)
                                                      << (i & 7);
         }
@@ -184,8 +188,10 @@ public class CipherDES implements IBlockCipher {
         Utils.arraycopy(block, 0, tmpblk, 0, 8);
         Utils.arrayfill(block, (byte) 0);
         
+        // permute block with given permutation, in reverse
         for (int i = 0; i < 64; ++i) {
             j = perm[i];
+            // result created one bit at a time
             block[i >> 3] |= (long) ((tmpblk[j >> 3] >> (7 ^ j & 7)) & 1L) 
                                                      << ((7 ^ i) & 7);
         }
@@ -216,7 +222,7 @@ public class CipherDES implements IBlockCipher {
             | SBOX_7[(int) (E >>  6) & 0x3F]
             | SBOX_8[(int) (E      ) & 0x3F];
         
-        // permutation (encodes the P block)
+        // permutation (encodes the P block), just moving bits around
         E =   (((E >>  7) & 1)      ) | (((E >> 28) & 1) <<  1)
             | (((E >> 21) & 1) <<  2) | (((E >> 10) & 1) <<  3)
             | (((E >> 26) & 1) <<  4) | (((E >>  2) & 1) <<  5)
@@ -259,7 +265,7 @@ public class CipherDES implements IBlockCipher {
             | (((long) block[6] & 0xFF) <<  8) 
             | (((long) block[7] & 0xFF));
         
-        // rounds. unroll for performance
+        // rounds. unroll for performance (so no for)
         vas ^= feistel( 0, oik); oik ^= feistel( 1, vas);
         vas ^= feistel( 2, oik); oik ^= feistel( 3, vas);
         vas ^= feistel( 4, oik); oik ^= feistel( 5, vas);
@@ -269,6 +275,7 @@ public class CipherDES implements IBlockCipher {
         vas ^= feistel(12, oik); oik ^= feistel(13, vas);
         vas ^= feistel(14, oik); oik ^= feistel(15, vas);
         
+        // 2 ints/longs to 8 bytes
         block[0] = (byte) ((oik >> 24) & 0xFF);
         block[1] = (byte) ((oik >> 16) & 0xFF);
         block[2] = (byte) ((oik >>  8) & 0xFF);

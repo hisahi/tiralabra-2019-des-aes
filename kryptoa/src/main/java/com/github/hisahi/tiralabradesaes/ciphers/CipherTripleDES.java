@@ -13,9 +13,9 @@ public class CipherTripleDES implements IBlockCipher {
 
     private boolean init;
     private boolean encrypting;
-    private CipherDES des1;
-    private CipherDES des2;
-    private CipherDES des3;
+    private final CipherDES des1;
+    private final CipherDES des2;
+    private final CipherDES des3;
     
     public CipherTripleDES() {
         init = false;
